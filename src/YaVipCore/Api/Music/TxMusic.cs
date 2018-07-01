@@ -15,6 +15,7 @@ namespace YaVipCore.Api.Music
 {
     public class TxMusic : IMusic
     {
+        private const string MusicIp = "http://mobileoc.music.tc.qq.com/";
 
         private static string _txToken;
         private static DateTime _lastUpdateTime = DateTime.MinValue;
@@ -411,29 +412,27 @@ namespace YaVipCore.Api.Music
                         return "http://stream.qqmusic.tc.qq.com/" + id + ".mp3";
                 }
             }
+            UpdateToken();
+            string fileName;
             switch (format)
             {
                 case "ape":
+                    fileName = "A000" + id + ".ape";
+                    break;
                 case "flac":
-                    UpdateToken();
-                    var fileName = format == "flac" ? ("F000" + id + ".flac") : ("A000" + id + ".ape");
-                    return "http://dl.stream.qqmusic.qq.com/" + fileName + "?vkey=" + _txToken + "&guid=YYFM&uin=123456&fromtag=53";
+                    fileName = "F000" + id + ".flac";
+                    break;
+                case "ogg":
+                    fileName = "O600" + id + ".ogg";
+                    break;
+                case "m4a":
+                    fileName = "C600" + id + ".m4a";
+                    break;
                 default:
-                    var key = GetKey();
-                    if (format == "ogg")
-                    {
-                        return "http://ws.stream.qqmusic.qq.com/O600" + id + ".ogg?vkey=" + key +
-                               "&guid=1103396853&fromtag=50";
-                    }
-                    else if (format == "m4a")
-                    {
-                        return "http://ws.stream.qqmusic.qq.com/C600" + id + ".m4a?vkey=" + key +
-                               "&guid=1103396853&fromtag=50";
-                    }
-                    return quality == "128"
-                        ? "http://ws.stream.qqmusic.qq.com/M500" + id + ".mp3?vkey=" + key + "&guid=1103396853&fromtag=50"
-                        : "http://ws.stream.qqmusic.qq.com/M800" + id + ".mp3?vkey=" + key + "&guid=1103396853&fromtag=50";
+                    fileName = (quality == "128" ? "M500" : "M800") + id + ".mp3";
+                    break;
             }
+            return MusicIp + fileName + "?vkey=" + _txToken + "&guid=YYFM&uin=123456&fromtag=53";
         }
 
         private const string TxCookie =
@@ -519,12 +518,12 @@ namespace YaVipCore.Api.Music
             return string.IsNullOrEmpty(html) ? null : Regex.Match(html, @"(?<=key"":"")[^""]+(?="")").Value;
         }
 
-        private static string GetKey()
-        {
-            var html =
-                CommonHelper.GetHtmlContent("http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=1103396853");
-            return Regex.Match(html, @"(?<=key"":\s*"")[^""]+").Value;
-        }
+        //private static string GetKey()
+        //{
+        //    var html =
+        //        CommonHelper.GetHtmlContent("http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=1103396853");
+        //    return Regex.Match(html, @"(?<=key"":\s*"")[^""]+").Value;
+        //}
 
         public List<SongResult> SongSearch(string key, int page, int size)
         {

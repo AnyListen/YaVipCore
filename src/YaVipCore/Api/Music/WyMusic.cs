@@ -15,18 +15,18 @@ namespace YaVipCore.Api.Music
     {
         #region 加密发送包
 
-        public static string WyNewCookie = "os=pc; deviceId=3CC39E100F817A747213022F8FC3077226274AB0A088697735F7; osver=Microsoft-Windows-10-Enterprise-Edition-build-14393-64bit; appver=2.0.3.131777; MUSIC_A=14e164cdf86ed76e828830659714bde5c16d2cff8d79b8750a58082a9d8a378fef1970afd7cb1277949988aadc7a61d826002407ec361667cebc0fdb0a002cbb90c743acfdceed98be1824e22e2bc245174509aac3061cd18d77b7a0; channel=netease; MUSIC_U=fcc85abead984aabe3236d96378eca09ce16a920e54077e894e20ffcaf2e125eb4d8f7d62b0f490596291fcf1bbb0a0e3a0068fd199a7ba0488d4bf122d59fa1ed6a2; __csrf=0a615d125cf1eba4a007c54b2503f66c; __remember_me=true";
+        public static string WyNewCookie = "MUSIC_U=8149f85dbe6e500d647b36e8504fce3bd243a48a699bc26e7531174de4cd486e26296e43872d0f6956a6c2c5be5fc4fd0d8f0d281b3ffd12; __remember_me=true; __csrf=26ae61aeed306bf69e4d2ea5edd00c9b;";
 
         private static string GetEncHtml(string url, string text)
         {
+            const string secKey = "a44e542eaac91dce";
             var pad = 16 - text.Length % 16;
             for (var i = 0; i < pad; i++)
             {
                 text = text + Convert.ToChar(pad);
             }
-            const string secKey = "BTS2qZg1ypY7saCy";
-            const string encSecKey = "48a894d34e85ae347e5122919f3d2a9f83880a6af9578aa82514a76d6a2057a7105e3b651a65070af877a8a358175784b5adf264adacc232994d37e6df2ea31197259c098913cd48433ea2e82be789ab6d038e0fc3d84e3b59b66bc64bd54216abb717a6481b923a17f6f5252e35bcab879335f171ef2c9f5cc89d19c6f8ab7f";
             var encText = AesEncrypt(AesEncrypt(text, "0CoJUm6Qyw8W8jud"), secKey);
+            const string encSecKey = "411571dca16717d9af5ef1ac97a8d21cb740329890560688b1b624de43f49fdd7702493835141b06ae45f1326e264c98c24ce87199c1a776315e5f25c11056b02dd92791fcc012bff8dd4fc86e37888d5ccc060f7837b836607dbb28bddc703308a0ba67c24c6420dd08eec2b8111067486c907b6e53c027ae1e56c188bc568e";
             var data = new Dictionary<string, string>
             {
                 {"params", encText},
@@ -522,12 +522,11 @@ namespace YaVipCore.Api.Music
             {
                 var songList = MusicService.GetMusic("xm")
                     .SongSearch(singleSong.ArtistName + "-" + singleSong.SongName, 1, 30);
-                song = songList.FirstOrDefault(t => CommonHelper.CompareStr(t.SongName, singleSong.SongName) &&
-                                                     (CommonHelper.CompareStr(t.ArtistName, singleSong.ArtistName) || CommonHelper.CompareStr(t.AlbumName, singleSong.AlbumName)));
-                if (song == null)
-                {
-                    song = songListQq.FirstOrDefault(t => CommonHelper.CompareStr(t.SongName, singleSong.SongName));
-                }
+                if (songListQq != null)
+                    song = songList.FirstOrDefault(t => CommonHelper.CompareStr(t.SongName, singleSong.SongName) &&
+                                                        (CommonHelper.CompareStr(t.ArtistName, singleSong.ArtistName) ||
+                                                         CommonHelper.CompareStr(t.AlbumName, singleSong.AlbumName))) ??
+                           songListQq.FirstOrDefault(t => CommonHelper.CompareStr(t.SongName, singleSong.SongName));
                 if (song == null)
                 {
                     song = songList.FirstOrDefault(t => CommonHelper.CompareStr(t.SongName, singleSong.SongName));
@@ -577,52 +576,52 @@ namespace YaVipCore.Api.Music
         private const string WyCookie =
             "__remember_me=true; MUSIC_U=c53e8fa763502bebd61488daaeb3d336fa0bd216452aa999b29453cbd46c07c3cbf122d59fa1ed6a2; __csrf=ae0c8a4af8e070d4c68d2c631501052c; os=WP; appver=1.2.2; deviceId=PByT0lnU4lzRlgzmqYWxZCbHHoE=; osver=Microsoft+Windows+NT+10.0.13067.0";
 
-        private static string GetLostUrl(string id, string quality)
-        {
-            var singleSong = SearchSingle(id);
-            var html = CommonHelper.GetHtmlContent("http://music.163.com/api/album/" + singleSong.AlbumId, 4,
-                new Dictionary<string, string>
-                {
-                    {"Cookie", WyCookie}
-                });
-            if (string.IsNullOrEmpty(html) || html == "null")
-            {
-                return null;
-            }
-            var json = JObject.Parse(html);
-            var datas = json["album"]["songs"];
-            var link = "";
-            foreach (JToken song in datas.Where(song => song["id"].ToString() == id))
-            {
-                switch (quality)
-                {
-                    case "320000":
-                        string dfsId;
-                        if (song["hMusic"].Type == JTokenType.Null)
-                        {
-                            if (song["mMusic"].Type == JTokenType.Null)
-                            {
-                                return song["mp3Url"]?.ToString();
-                            }
-                            dfsId = song["mMusic"]["dfsId"]?.ToString();
-                        }
-                        else
-                        {
-                            dfsId = song["hMusic"]["dfsId"]?.ToString();
-                        }
-                        link = GetUrlBySid(dfsId);
-                        break;
-                    case "192000":
-                        link = song["mMusic"].Type == JTokenType.Null ? song["mp3Url"]?.ToString() : GetUrlBySid(song["mMusic"]["dfsId"]?.ToString());
-                        break;
-                    default:
-                        link = song["mp3Url"]?.ToString();
-                        break;
-                }
-            }
-            //return string.IsNullOrEmpty(link) ? GetLostUrlByPid(id, quality) : link;
-            return link;
-        }
+        //private static string GetLostUrl(string id, string quality)
+        //{
+        //    var singleSong = SearchSingle(id);
+        //    var html = CommonHelper.GetHtmlContent("http://music.163.com/api/album/" + singleSong.AlbumId, 4,
+        //        new Dictionary<string, string>
+        //        {
+        //            {"Cookie", WyCookie}
+        //        });
+        //    if (string.IsNullOrEmpty(html) || html == "null")
+        //    {
+        //        return null;
+        //    }
+        //    var json = JObject.Parse(html);
+        //    var datas = json["album"]["songs"];
+        //    var link = "";
+        //    foreach (JToken song in datas.Where(song => song["id"].ToString() == id))
+        //    {
+        //        switch (quality)
+        //        {
+        //            case "320000":
+        //                string dfsId;
+        //                if (song["hMusic"].Type == JTokenType.Null)
+        //                {
+        //                    if (song["mMusic"].Type == JTokenType.Null)
+        //                    {
+        //                        return song["mp3Url"]?.ToString();
+        //                    }
+        //                    dfsId = song["mMusic"]["dfsId"]?.ToString();
+        //                }
+        //                else
+        //                {
+        //                    dfsId = song["hMusic"]["dfsId"]?.ToString();
+        //                }
+        //                link = GetUrlBySid(dfsId);
+        //                break;
+        //            case "192000":
+        //                link = song["mMusic"].Type == JTokenType.Null ? song["mp3Url"]?.ToString() : GetUrlBySid(song["mMusic"]["dfsId"]?.ToString());
+        //                break;
+        //            default:
+        //                link = song["mp3Url"]?.ToString();
+        //                break;
+        //        }
+        //    }
+        //    //return string.IsNullOrEmpty(link) ? GetLostUrlByPid(id, quality) : link;
+        //    return link;
+        //}
 
         //private static string GetLostUrlByPid(string id, string quality)
         //{
@@ -679,16 +678,16 @@ namespace YaVipCore.Api.Music
         //    return null;
         //}
 
-        private static string GetUrlBySid(string dfsId)
-        {
-            if (dfsId == "0")
-            {
-                return "";
-            }
-            var encryptPath = EncryptId(dfsId);
-            var url = $"http://p2.music.126.net/{encryptPath}/{dfsId}.mp3";
-            return url;
-        }
+        //private static string GetUrlBySid(string dfsId)
+        //{
+        //    if (dfsId == "0")
+        //    {
+        //        return "";
+        //    }
+        //    var encryptPath = EncryptId(dfsId);
+        //    var url = $"http://p2.music.126.net/{encryptPath}/{dfsId}.mp3";
+        //    return url;
+        //}
 
         private static string GetPic(string id)
         {
