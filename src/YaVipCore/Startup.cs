@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using NLog.Extensions.Logging;
-using YaVipCore.Middleware;
 using YaVipCore.Service;
 using YaVipCore.Api.Music;
 using YaVipCore.Helper;
@@ -40,7 +39,7 @@ namespace YaVipCore
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             loggerFactory.AddConsole(LogLevel.Warning).AddNLog();
 
-            app.UseTokenSign();
+            //app.UseTokenSign();
             app.UseMvc();
             app.UseStaticFiles();
 
