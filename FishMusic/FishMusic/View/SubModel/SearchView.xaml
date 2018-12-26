@@ -1,0 +1,197 @@
+﻿<UserControl x:Class="FishMusic.View.SubModel.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewModel="clr-namespace:FishMusic.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converter="clr-namespace:FishMusic.Converter"
+             mc:Ignorable="d" 
+             Height="Auto"
+             Width="Auto"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.DataContext>
+        <viewModel:SearchViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.Resources>
+            <converter:PageToVisibleConverter x:Key="PageToVisible"/>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="96"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="60"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox SelectedValue="{Binding SelectEngine}"
+                      ItemsSource="{Binding EngineList}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Key"/>
+            
+            <TextBox Grid.Column="1" Margin="5 0"
+                     Text="{Binding SearchText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                     VerticalContentAlignment="Center"
+                     controls:TextBoxHelper.Watermark="请输入关键词或者网址进行搜索"
+                     controls:TextBoxHelper.ClearTextButton="True">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" 
+                                Command="{Binding SearchCmd}" />
+                </TextBox.InputBindings>
+            </TextBox>
+
+            <Button Grid.Column="2" Content="搜索" 
+                    IsEnabled="{Binding CanSearch}"
+                    Command="{Binding SearchCmd}"
+                    VerticalContentAlignment="Center"
+                    Style="{DynamicResource SquareButtonStyle}"></Button>
+        </Grid>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" x:Name="ColGrid1"/>
+            <Grid Grid.Column="1" x:Name="ColGrid2"/>
+            <Grid Grid.Column="2" x:Name="ColGrid3"/>
+            <Grid Grid.Column="3" x:Name="ColGrid4"/>
+            <Grid Grid.Column="4" x:Name="ColGrid5"/>
+        </Grid>
+
+        <ListView Grid.Row="1" Margin="0 5" BorderThickness="0"
+                  Visibility="{Binding CurrentPage, 
+            Converter={StaticResource PageToVisible}, 
+            ConverterParameter='search'}"
+                  SelectedItem="{Binding SelectSong}"
+                  ItemsSource="{Binding SearchResultCollection}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DoubleClickCmd}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ListView.Style>
+                <Style>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"></Setter>
+                </Style>
+            </ListView.Style>
+            
+            
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn
+                        Width="{Binding ElementName=ColGrid1, Path=ActualWidth}"
+                        Header="操作">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Play"
+                                                                Height="12"
+                                                                Width="12"
+                                                                Margin="5"/>
+                                    <iconPacks:PackIconMaterial Kind="HeartOutline"
+                                                                Height="12"
+                                                                Width="12"
+                                                                Margin="5"/>
+                                    <iconPacks:PackIconMaterial Kind="Download"
+                                                                Height="12"
+                                                                Width="12"
+                                                                Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding ElementName=ColGrid2, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding SongName}"
+                                    Header="歌曲名称" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid3, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding ArtistName}"
+                                    Header="艺术家" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid4, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding AlbumName}"
+                                    Header="专辑" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid5, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding BitRate}"
+                                    Header="音质" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Row="1" Visibility="{Binding CurrentPage, 
+            Converter={StaticResource PageToVisible}, 
+            ConverterParameter='searching'}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <controls:ProgressRing Height="36" Width="36"></controls:ProgressRing>
+                <TextBlock FontSize="16" Padding="10"
+        HorizontalAlignment="Center"
+                           Foreground="#666">正在搜索请稍等...</TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Visibility="{Binding CurrentPage, 
+            Converter={StaticResource PageToVisible}, 
+            ConverterParameter='noresult'}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock FontSize="16"
+                           HorizontalAlignment="Center">
+                    <Label Foreground="#666">未找到</Label>
+                    <Label Content="{Binding SearchText}"
+                           Foreground="{StaticResource AccentColorBrush}"></Label>
+                    <Label Foreground="#666">相关的结果</Label>
+                </TextBlock>
+                <TextBlock FontSize="16" Padding="5"
+                           HorizontalAlignment="Center"
+                           Foreground="#666">请更换关键词重新搜索</TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Visibility="{Binding CurrentPage, 
+            Converter={StaticResource PageToVisible}, 
+            ConverterParameter='hotsearch'}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                <TextBlock Text="热门搜索" 
+                           FontSize="16"
+                           Foreground="{StaticResource AccentColorBrush}"
+                           HorizontalAlignment="Center"
+                           Padding="10 30 10 10"></TextBlock>
+                
+                <ListBox ItemsSource="{Binding HotWords}" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       Cursor="Hand"
+                                       Padding="10 2"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#666">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.HotWordsClickCmd}" CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

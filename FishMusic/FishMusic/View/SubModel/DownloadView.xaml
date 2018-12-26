@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="FishMusic.View.SubModel.DownloadView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewModel="clr-namespace:FishMusic.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:gmc="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             Height="Auto"
+             Width="Auto"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             d:DesignHeight="400" d:DesignWidth="600">
+    <Grid Margin="2 0 0 0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ListBox Background="Transparent"
+                 SelectedIndex="0" 
+                 Padding="5 0 6 0">
+            <!--<ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="28"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding }"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>-->
+
+            <ListBoxItem Content="正在下载" />
+            <ListBoxItem Content="下载历史" />
+
+        </ListBox>
+
+        <Border Grid.Column="1" BorderBrush="#CCC" 
+                Margin="0 6"
+                BorderThickness="1"></Border>
+
+        <TabControl x:Name="TabControl"
+                    Grid.Column="2"
+                    SelectedIndex="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="正在下载">
+
+            </TabItem>
+            <TabItem Header="下载历史">
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

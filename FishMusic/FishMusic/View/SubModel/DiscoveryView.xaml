@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="FishMusic.View.SubModel.DiscoveryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewModel="clr-namespace:FishMusic.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:gmc="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:subModel="clr-namespace:FishMusic.View.SubModel"
+             mc:Ignorable="d" 
+             Height="Auto"
+             Width="Auto"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             d:DesignHeight="400" d:DesignWidth="600">
+    <Grid Margin="2 0 0 0">
+        <subModel:SearchView />
+    </Grid>
+</UserControl>

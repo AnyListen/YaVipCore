@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishMusic", "FishMusic\FishMusic.csproj", "{ADDE7A68-BEB6-4425-A0A1-FBDC72147C42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnyListen", "AnyListen\AnyListen.csproj", "{7BDA5D96-1272-441A-8DBB-C70114B991CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADDE7A68-BEB6-4425-A0A1-FBDC72147C42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADDE7A68-BEB6-4425-A0A1-FBDC72147C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADDE7A68-BEB6-4425-A0A1-FBDC72147C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADDE7A68-BEB6-4425-A0A1-FBDC72147C42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDA5D96-1272-441A-8DBB-C70114B991CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDA5D96-1272-441A-8DBB-C70114B991CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDA5D96-1272-441A-8DBB-C70114B991CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDA5D96-1272-441A-8DBB-C70114B991CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2228253A-099A-453A-AD34-C000FFD56809}
+	EndGlobalSection
+EndGlobal

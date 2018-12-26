@@ -1,0 +1,363 @@
+﻿<UserControl x:Class="FishMusic.View.Controls.PlayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewModel="clr-namespace:FishMusic.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:gmc="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
+             xmlns:converter="clr-namespace:FishMusic.Converter"
+             mc:Ignorable="d" 
+             Height="145"
+             Width="Auto"
+             HorizontalAlignment="Stretch"
+             d:DesignHeight="145" d:DesignWidth="1024">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding UnloadedCmd}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <UserControl.DataContext>
+        <viewModel:PlayViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converter:TrackTimeConverter x:Key="TimeConvert"/>
+    </UserControl.Resources>
+    
+    
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+                <RowDefinition Height="104"></RowDefinition>
+                <RowDefinition Height="41"></RowDefinition>
+            </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <Grid.Background>
+                <ImageBrush ImageSource="../../Resources/Images/play_bg.png" TileMode="Tile" Viewport="0,0,1,1" Stretch="Fill"></ImageBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="鱼声音乐" 
+                           Foreground="Gray"
+                           Grid.Column="1"
+                           FontSize="12"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"></TextBlock>
+            </Grid>
+            
+            <Grid Grid.Row="1" Margin="10 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="200"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.Resources>
+                        <converter:UrlConverter x:Key="RealUrlConverter"/>
+                    </Grid.Resources>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Name="ImgBorder"  
+                            Background="#FAFAFA"
+                            CornerRadius="5" />
+                    <Image Grid.Column="0" Width="64" HorizontalAlignment="Left" Source="{Binding PlayingSong.SmallPic, Converter={StaticResource RealUrlConverter}}" Stretch="Fill">
+                        <Image.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=ImgBorder, Mode=OneTime}" />
+                        </Image.OpacityMask>
+                    </Image>
+
+                    <Grid Grid.Column="1" Margin="-6 0 10 0">
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="FontFamily" Value="微软雅黑"></Setter>
+                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PlayingSong.SongName}"
+                                       VerticalAlignment="Center"
+                                       Foreground="#333"></TextBlock>
+                            <TextBlock Text=" - "
+                                       Foreground="#333"></TextBlock>
+                            
+                            <TextBlock Text="{Binding PlayingSong.ArtistName}"
+                                       Foreground="#333"></TextBlock>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" Text="{Binding PlayingSong.AlbumName}" Foreground="#474747"></TextBlock>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="#474747"></Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Text="{Binding CurrentPosition, Converter={StaticResource TimeConvert}}"></TextBlock>
+                            <TextBlock Text="/"></TextBlock>
+                            <TextBlock Text="{Binding TrackLength, Converter={StaticResource TimeConvert}}"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Column="1" Margin="10 0">
+                    <Grid.Resources>
+                        <converter:PlayStateConverter x:Key="PlayStateConvert"/>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="60"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Width="32"
+                            Height="32"
+                            Margin="10 0"
+                            Background="#E6E6E6"
+                            HorizontalAlignment="Right"
+                            BorderBrush="Transparent"
+                            Command="{Binding BeforeCmd}"
+                            ToolTip="上一曲"
+                            Cursor="Hand"
+                            Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}">
+                        <iconPacks:PackIconMaterial Kind="SkipPrevious" Width="12" Height="12" Foreground="#464646"/>
+                    </Button>
+                    <Button Width="48"
+                            Height="48"
+                            Grid.Column="1"
+                            Background="#E6E6E6"
+                            Cursor="Hand"
+                            BorderBrush="Transparent"
+                            Command="{Binding PlayClickCmd}"
+                            Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}">
+                        <iconPacks:PackIconMaterial Kind="{Binding IsPlaying,Converter={StaticResource PlayStateConvert}}" Width="20" Height="20" Foreground="#464646"/>
+                    </Button>
+                    <Button Width="32"
+                            Height="32"
+                            Margin="10 0"
+                            Grid.Column="2"
+                            Background="#E6E6E6"
+                            Cursor="Hand"
+                            BorderBrush="Transparent"
+                            HorizontalAlignment="Left"
+                            Command="{Binding NextCmd}"
+                            ToolTip="下一曲"
+                            Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}">
+                        <iconPacks:PackIconMaterial Kind="SkipNext" Width="12" Height="12" Foreground="#464646"/>
+                    </Button>
+                </Grid>
+                
+                
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+
+                        <TextBlock Padding="5" Width="26" Height="26" Margin="5" Cursor="Hand"
+                                   HorizontalAlignment="Left"
+                                   ToolTip="点击可静音"
+                                   VerticalAlignment="Center">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction Command="{Binding VolumeClickCmd}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <iconPacks:PackIconFontAwesome VerticalAlignment="Center"
+                                                           HorizontalAlignment="Left"
+                                                           Kind="{Binding VolumeKind}" Width="16" Height="16" Foreground="#464646">
+                            </iconPacks:PackIconFontAwesome>
+                        </TextBlock>
+                        
+                        <Slider Width="100"
+                            Height="8"
+                                Cursor="Hand"
+                            VerticalAlignment="Center"
+                            Style="{DynamicResource FlatSlider}"
+                            Value="{Binding PlayerVolume}" />
+                    </StackPanel>
+
+                    <Border Grid.Column="1" 
+                            Width="90"
+                            BorderBrush="#EEE" 
+                            BorderThickness="1" 
+                            Background="#EEE" 
+                            CornerRadius="10" 
+                            Margin="5" 
+                            Padding="5 3">
+                        <Grid>
+                            <Grid.Resources>
+                                <converter:ControlColorConverter x:Key="ControlColorConvert"/>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Width" Value="20"></Setter>
+                                    <Setter Property="Height" Value="18"></Setter>
+                                    <Setter Property="Padding" Value="2"></Setter>
+                                    <Setter Property="Cursor" Value="Hand"></Setter>
+                                    <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+
+                            <TextBlock Grid.Column="0" Grid.Row="0"
+                                       ToolTip="循环播放">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                                        <i:InvokeCommandAction Command="{Binding RepeatClickCmd}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <iconPacks:PackIconEntypo Kind="Loop" 
+                                                          Width="16" Height="14"
+                                                          Foreground="{Binding IsRepeat, Converter={StaticResource ControlColorConvert}}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="1" Grid.Row="0" ToolTip="随机播放">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction Command="{Binding RandomClickCmd}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <iconPacks:PackIconEntypo Kind="Shuffle" 
+                                                      Width="16" Height="14"
+                                                      Foreground="{Binding IsRandom, Converter={StaticResource ControlColorConvert}}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Padding="2 1" ToolTip="定时关机">
+                                <iconPacks:PackIconModern Width="16" Height="16" Kind="Clock"  Foreground="#111"/>
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="1" Grid.Row="1" ToolTip="音效调节">
+                                <iconPacks:PackIconMaterial Kind="TuneVertical" Width="16" Height="14" Foreground="#111"/>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="WaveGrid" Cursor="Hand" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SizeChanged">
+                    <gmc:EventToCommand PassEventArgsToCommand="False" Command="{Binding ImageResizeCmd}"></gmc:EventToCommand>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <gmc:EventToCommand PassEventArgsToCommand="True" Command="{Binding ImageMouseDownCmd}"></gmc:EventToCommand>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseMove">
+                    <gmc:EventToCommand PassEventArgsToCommand="True" Command="{Binding ImageMouseMoveCmd}"></gmc:EventToCommand>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <gmc:EventToCommand PassEventArgsToCommand="False" Command="{Binding ImageMouseLeaveCmd}"></gmc:EventToCommand>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Grid.Resources>
+                <converter:BitmapConverter x:Key="BitmapConvert"/>
+            </Grid.Resources>
+            
+            <Grid.Background>
+                <ImageBrush ImageSource="../../Resources/Images/wave_bg.png" TileMode="Tile" Viewport="0,0,0.25,1" Stretch="Fill"></ImageBrush>
+            </Grid.Background>
+            <Image Source="{Binding WaveBackImage, Converter={StaticResource BitmapConvert}}" 
+                   x:Name="ProcessImage"
+                   Stretch="None">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding InitControlCmd}" CommandParameter="{Binding ElementName=WaveGrid}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Image>
+
+            <Image Source="{Binding WaveProcessImage, Converter={StaticResource BitmapConvert}}" Stretch="None"
+                   HorizontalAlignment="Left"
+                   Width="{Binding ProcessWidth}"></Image>
+
+            <Popup StaysOpen="True" Placement="Mouse" IsOpen="{Binding ShowTime}" AllowsTransparency="True" PopupAnimation="Fade">
+                <Border BorderThickness="1" Padding="6 4" BorderBrush="#CCC" Background="#F7F7F7">
+                    <TextBlock Text="{Binding PopUpText}" Foreground="#333"></TextBlock>
+                </Border>
+            </Popup>
+
+            <!--<wpfSoundVisualizationLib:WaveformTimeline x:Name="SoundVisualControl"
+                                                       Width="Auto"
+                                                       HorizontalAlignment="Stretch"
+                                                       Height="100"
+                                                       TimelineTickBrush="LightGray"
+                                                       IsHitTestVisible="True"
+                                                       LeftLevelBrush="{StaticResource AccentColorBrush3}"
+                                                       RightLevelBrush="Transparent"
+                                                       CenterLineThickness="0"
+                                                       ProgressBarThickness="1"
+                                                       ProgressBarBrush="{StaticResource AccentColorBrush}"
+                                                       AllowRepeatRegions="False">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding RegistCmd}" CommandParameter="{Binding ElementName=SoundVisualControl}" />
+                    </i:EventTrigger>
+                    --><!--<i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding RegistCmd}" CommandParameter="{Binding ElementName=SoundVisualControl}" />
+                    </i:EventTrigger>--><!--
+                </i:Interaction.Triggers>
+            </wpfSoundVisualizationLib:WaveformTimeline>-->
+
+            <!--<wpfSoundVisualizationLib:WaveformTimeline x:Name="ProcessSoundVisualControl"
+                                                       Height="100"
+                                                       
+                                                       TimelineTickBrush="LightGray"
+                                                       IsHitTestVisible="True"
+                                                       LeftLevelBrush="{StaticResource AccentColorBrush}"
+                                                       RightLevelBrush="Transparent"
+                                                       CenterLineThickness="0"
+                                                       ProgressBarThickness="1"
+                                                       ProgressBarBrush="{StaticResource AccentColorBrush}"
+                                                       AllowRepeatRegions="False">
+                <wpfSoundVisualizationLib:WaveformTimeline.Width>
+                    <MultiBinding Converter="{StaticResource PrecentConverter}">
+                        <Binding Path="PlayProcess"/>
+                    </MultiBinding>
+                </wpfSoundVisualizationLib:WaveformTimeline.Width>
+                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding RegistCmd}" CommandParameter="{Binding ElementName=ProcessSoundVisualControl}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </wpfSoundVisualizationLib:WaveformTimeline>-->
+        </Grid>
+    </Grid>
+</UserControl>

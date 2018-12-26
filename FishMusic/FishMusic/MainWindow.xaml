@@ -1,0 +1,45 @@
+﻿<controls:MetroWindow x:Class="FishMusic.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:FishMusic"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:view="clr-namespace:FishMusic.View"
+                      xmlns:uc="clr-namespace:FishMusic.View.Controls"
+                      mc:Ignorable="d"
+                      Style="{StaticResource CleanWindowStyleKey}"
+                      ResizeMode="CanResizeWithGrip"
+                      WindowStartupLocation="CenterScreen"
+                      WindowTransitionsEnabled="True"
+                      MinHeight="622"
+                      MinWidth="920"
+                      Height="622"
+                      Width="920"
+                      ShowTitleBar="False"
+                      GlowBrush="LightGray"
+                      ShowIconOnTitleBar="False">
+    <controls:MetroWindow.DataContext>
+        <Binding Path="Main" Source="{StaticResource Locator}" />
+    </controls:MetroWindow.DataContext>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="79"></RowDefinition>
+                <!--<RowDefinition Height="36"></RowDefinition>-->
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0">
+                <view:MainControl />
+            </Border>
+
+            <uc:MainPlayControl MouseLeftButtonDown="DragWindow" Grid.Row="1"/>
+        </Grid>
+
+        <Grid>
+
+        </Grid>
+    </Grid>
+</controls:MetroWindow>
