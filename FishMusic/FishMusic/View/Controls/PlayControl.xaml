@@ -19,7 +19,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.DataContext>
-        <viewModel:PlayViewModel />
+        <Binding Path="Play" Source="{StaticResource Locator}" />
     </UserControl.DataContext>
     <UserControl.Resources>
         <converter:TrackTimeConverter x:Key="TimeConvert"/>
@@ -85,6 +85,11 @@
                         <Image.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ImgBorder, Mode=OneTime}" />
                         </Image.OpacityMask>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding FullScreenCmd}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Image>
 
                     <Grid Grid.Column="1" Margin="-6 0 10 0">

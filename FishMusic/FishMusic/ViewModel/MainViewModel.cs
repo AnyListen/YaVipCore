@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight;
+using System;
 
 namespace FishMusic.ViewModel
 {
@@ -16,19 +17,32 @@ namespace FishMusic.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private bool _fullScreen = false;
+
+        public bool FullScreen
+        {
+            get => _fullScreen;
+            set
+            {
+                _fullScreen = value;
+                RaisePropertyChanged("FullScreen");
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            MessengerInstance.Register(this, "FullScreen", new Action<bool>(b =>
+            {
+                FullScreen = !FullScreen;
+            }));
+        }
+
+        public override void Cleanup()
+        {
+            MessengerInstance.Unregister<bool>(this, "FullScreen");
         }
     }
 }

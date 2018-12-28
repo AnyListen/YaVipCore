@@ -222,6 +222,7 @@ namespace FishMusic.ViewModel
 
         #endregion
 
+
         public PlayViewModel()
         {
             PlayingSong = new SongResult();
@@ -242,6 +243,11 @@ namespace FishMusic.ViewModel
                 PlayerVolume = _lastVolume;
                 _lastVolume = temp;
             });
+            FullScreenCmd = new RelayCommand((() =>
+            {
+                MessengerInstance.Send<bool>(true, "FullScreen");
+            }));
+
             BeforeCmd = new RelayCommand(PlayBefore);
             NextCmd = new RelayCommand(PlayNext);
 
@@ -262,9 +268,9 @@ namespace FishMusic.ViewModel
                     return;
                 }
                 PlayingSong = s;
-                if (s.Type == "sn")
+                if (s.Type == "sn" || !string.IsNullOrEmpty(s.FlacUrl))
                 {
-                    PlaySong(string.IsNullOrEmpty(s.FlacUrl) ? s.CopyUrl : s.FlacUrl);
+                    PlaySong(AnyListen.AnyListen.GetRealUrl(string.IsNullOrEmpty(s.FlacUrl) ? s.CopyUrl : s.FlacUrl));
                 }
                 else
                 {
@@ -320,8 +326,9 @@ namespace FishMusic.ViewModel
         public RelayCommand RepeatClickCmd { get; set; }
         public RelayCommand RandomClickCmd { get; set; }
         public RelayCommand VolumeClickCmd { get; set; }
-
+        public RelayCommand FullScreenCmd { get; set; }
         private bool _isPlaying;
+        
 
         public bool IsPlaying
         {

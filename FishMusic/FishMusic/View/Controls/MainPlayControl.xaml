@@ -19,7 +19,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.DataContext>
-        <viewModel:PlayViewModel />
+        <Binding Path="Play" Source="{StaticResource Locator}" />
     </UserControl.DataContext>
     <UserControl.Resources>
         <converter:TrackTimeConverter x:Key="TimeConvert"/>
@@ -98,10 +98,16 @@
                     <Border Grid.Column="0" Name="ImgBorder"
                             Background="{StaticResource WhiteBrush}"
                             CornerRadius="5" />
-                    <Image Grid.Column="0" Width="64" HorizontalAlignment="Left" Source="{Binding PlayingSong.SmallPic, Converter={StaticResource RealUrlConverter}}" Stretch="Fill">
+                    <Image Grid.Column="0" Width="64" HorizontalAlignment="Left" Cursor="Hand"
+                           Source="{Binding PlayingSong.SmallPic, Converter={StaticResource RealUrlConverter}}" Stretch="Fill">
                         <Image.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ImgBorder, Mode=OneTime}" />
                         </Image.OpacityMask>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding FullScreenCmd}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Image>
 
                     <Grid Grid.Column="1" Margin="-6 0 10 0">

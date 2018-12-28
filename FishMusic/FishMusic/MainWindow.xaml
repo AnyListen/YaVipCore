@@ -8,6 +8,7 @@
                       xmlns:view="clr-namespace:FishMusic.View"
                       xmlns:uc="clr-namespace:FishMusic.View.Controls"
                       mc:Ignorable="d"
+                      x:Name="MainFrm"
                       Style="{StaticResource CleanWindowStyleKey}"
                       ResizeMode="CanResizeWithGrip"
                       WindowStartupLocation="CenterScreen"
@@ -22,6 +23,17 @@
     <controls:MetroWindow.DataContext>
         <Binding Path="Main" Source="{StaticResource Locator}" />
     </controls:MetroWindow.DataContext>
+
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl >
+            <controls:Flyout Position="Bottom" IsOpen="{Binding FullScreen}" Theme="Light"
+                             TitleVisibility="Collapsed"
+                             CloseButtonVisibility="Collapsed">
+                <view:PlayingPage Height="{Binding ElementName=MainFrm, Path=ActualHeight}"
+                                  Width="{Binding ElementName=MainFrm, Path=ActualWidth}"></view:PlayingPage>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts> 
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -36,10 +48,6 @@
             </Border>
 
             <uc:MainPlayControl MouseLeftButtonDown="DragWindow" Grid.Row="1"/>
-        </Grid>
-
-        <Grid>
-
         </Grid>
     </Grid>
 </controls:MetroWindow>
