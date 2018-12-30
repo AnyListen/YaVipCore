@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using AnyListen.Helper;
 using AnyListen.Models;
+using FishMusic.Download;
 using FishMusic.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -106,7 +111,8 @@ namespace FishMusic.ViewModel
         }
 
         public RelayCommand SearchCmd { get; set; }
-        public RelayCommand DoubleClickCmd { get; set; }
+        public RelayCommand<object> DownCmd { get; set; }
+        public RelayCommand<object> DoubleClickCmd { get; set; }
         public RelayCommand<object> HotWordsClickCmd { get; set; }
 
         public SearchViewModel()
@@ -129,7 +135,8 @@ namespace FishMusic.ViewModel
             SearchResultCollection = null;
             SelectSong = new SongResult();
             SearchCmd = new RelayCommand(SearchSong);
-            DoubleClickCmd = new RelayCommand(PlaySong);
+            DownCmd = new RelayCommand<object>(DownloadSong);
+            DoubleClickCmd = new RelayCommand<object>(PlaySong);
             HotWordsClickCmd = new RelayCommand<object>((s) =>
             {
                 SearchText = s.ToString();
@@ -138,12 +145,55 @@ namespace FishMusic.ViewModel
             CanSearch = true;
         }
 
-        private void PlaySong()
+        private void DownloadSong(object song)
         {
-            if (SelectSong == null)
+            var songResult = (SongResult) song;
+
+            if (songResult.Type == "sn")
+            {
+                if (string.IsNullOrEmpty(songResult.FlacUrl) || !songResult.FlacUrl.EndsWith("flac") || !songResult.FlacUrl.EndsWith("wav") || !songResult.FlacUrl.EndsWith("ape"))
+                {
+                    songResult = AnyListen.AnyListen
+                        .Search("sn", songResult.SongName + " - " + songResult.ArtistName, 1, 100)
+                        .SingleOrDefault(t => t.SongId == songResult.SongId);
+                }
+            }
+
+            if (songResult == null)
             {
                 return;
             }
+            var downLink = AnyListen.AnyListen.GetRealUrl(Helper.CommonHelper.GetDownloadUrl(songResult, 0, 0, false));
+            if (string.IsNullOrEmpty(downLink))
+            {
+                return;
+            }
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Music", songResult.SongId + Helper.CommonHelper.GetFormat(downLink));
+            var download = new DownloadInfo
+            {
+                DownLink = AnyListen.AnyListen.GetRealUrl(downLink),
+                FilePath = filePath,
+                SongInfo = songResult,
+                Status = DownStatus.WAITING,
+                Progress = 0,
+                CreateTime = DateTime.Now,
+                Id = songResult.SongId
+            };
+            MessengerInstance.Send(download, "DownloadSong");
+        }
+
+        private void PlaySong(object song)
+        {
+            if (SelectSong == null && song == null)
+            {
+                return;
+            }
+
+            if (SelectSong == null)
+            {
+                SelectSong = (SongResult)song;
+            }
+
             MessengerInstance.Send(SelectSong, "PlaySong");
         }
 
@@ -165,7 +215,7 @@ namespace FishMusic.ViewModel
             {
                 try
                 {
-                    var list = AnyListen.AnyListen.GetMusic(_selectEngine).SongSearch(_searchText, _page, _size);
+                    var list = AnyListen.AnyListen.Search(_selectEngine, _searchText, _page, _size) ?? new List<SongResult>();
                     SearchResultCollection = new ObservableCollection<SongResult>(list);
                 }
                 finally

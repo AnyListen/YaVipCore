@@ -101,15 +101,29 @@
                                     <iconPacks:PackIconMaterial Kind="Play"
                                                                 Height="12"
                                                                 Width="12"
-                                                                Margin="5"/>
+                                                                Cursor="Hand"
+                                                                Margin="5">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DoubleClickCmd}" CommandParameter="{Binding}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </iconPacks:PackIconMaterial>
                                     <iconPacks:PackIconMaterial Kind="HeartOutline"
                                                                 Height="12"
                                                                 Width="12"
                                                                 Margin="5"/>
                                     <iconPacks:PackIconMaterial Kind="Download"
+                                                                Cursor="Hand"
                                                                 Height="12"
                                                                 Width="12"
-                                                                Margin="5"/>
+                                                                Margin="5">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DownCmd}" CommandParameter="{Binding}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </iconPacks:PackIconMaterial>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

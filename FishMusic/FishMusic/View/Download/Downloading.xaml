@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="FishMusic.View.Download.Downloading"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FishMusic.View.Download"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <Binding Path="Download" Source="{StaticResource Locator}" />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="104"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" x:Name="ColGrid1"/>
+            <Grid Grid.Column="1" x:Name="ColGrid2"/>
+            <Grid Grid.Column="2" x:Name="ColGrid3"/>
+            <Grid Grid.Column="3" x:Name="ColGrid4"/>
+            <Grid Grid.Column="4" x:Name="ColGrid5"/>
+            <Grid Grid.Column="5" x:Name="ColGrid6"/>
+        </Grid>
+
+         <ListView Grid.Row="1" Margin="0 5" BorderThickness="0" 
+                   ItemsSource="{Binding DownloadingCollection}">
+            <ListView.Style>
+                <Style>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"></Setter>
+                </Style>
+            </ListView.Style>
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn 
+                         Width="{Binding ElementName=ColGrid1, Path=ActualWidth}" 
+                         Header="操作">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="HeartOutline" 
+                                                                 Height="12" 
+                                                                 Width="12" 
+                                                                 Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding ElementName=ColGrid2, Path=ActualWidth}" 
+                                     DisplayMemberBinding="{Binding SongInfo.SongName}" 
+                                     Header="歌曲" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid3, Path=ActualWidth}" 
+                                     DisplayMemberBinding="{Binding SongInfo.SongName}" 
+                                     Header="艺术家" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid4, Path=ActualWidth}" 
+                                     DisplayMemberBinding="{Binding SongInfo.SongName}" 
+                                     Header="专辑" />
+                    <GridViewColumn Width="{Binding ElementName=ColGrid5, Path=ActualWidth}" 
+                                     Header="进度" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ProgressBar Width="100" 
+                                           Value="{Binding Progress}" 
+                                           Minimum="0" 
+                                           Margin="0"
+                                           VerticalAlignment="Center"
+                                           Maximum="100"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding ElementName=ColGrid6, Path=ActualWidth}" 
+                                     DisplayMemberBinding="{Binding Status}"
+                                     Header="状态" />
+                </GridView>
+            </ListView.View>
+        </ListView> 
+
+    </Grid>
+</UserControl>

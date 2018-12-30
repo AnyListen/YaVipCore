@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using AnyListen.Models;
+using FishMusic.Download;
 using FishMusic.Helper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -225,6 +226,7 @@ namespace FishMusic.ViewModel
 
         public PlayViewModel()
         {
+            Xl.XL_Init();
             PlayingSong = new SongResult();
             InitControlCmd = new RelayCommand<object>(InitControl);
             ImageResizeCmd = new RelayCommand(DrawWave);
@@ -259,6 +261,7 @@ namespace FishMusic.ViewModel
                 _updateTimer.Dispose();
                 Stop();
                 ActiveStreamHandle = 0;
+                Xl.XL_UnInit();
             });
 
             MessengerInstance.Register(this, "PlaySong", new Action<SongResult>(s =>
@@ -478,6 +481,10 @@ namespace FishMusic.ViewModel
         private CancellationTokenSource _cancellationToken;
         private void PlaySong(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
             try
             {
                 if (_playTask != null)

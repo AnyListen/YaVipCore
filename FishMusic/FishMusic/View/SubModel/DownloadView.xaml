@@ -8,12 +8,17 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:gmc="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:download="clr-namespace:FishMusic.View.Download"
              mc:Ignorable="d" 
              Height="Auto"
              Width="Auto"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              d:DesignHeight="400" d:DesignWidth="600">
+    <UserControl.DataContext>
+        <Binding Path="Download" Source="{StaticResource Locator}" />
+    </UserControl.DataContext>
+
     <Grid Margin="2 0 0 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="170" />
@@ -21,23 +26,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ListBox Background="Transparent"
-                 SelectedIndex="0" 
+                 SelectedIndex="{Binding ItemSelIndex}" 
                  Padding="5 0 6 0">
-            <!--<ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="28"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding }"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>-->
-
-            <ListBoxItem Content="正在下载" />
-            <ListBoxItem Content="下载历史" />
-
+            <ListBoxItem Content="待下载" />
+            <ListBoxItem Content="已完成" />
         </ListBox>
 
         <Border Grid.Column="1" BorderBrush="#CCC" 
@@ -46,17 +38,17 @@
 
         <TabControl x:Name="TabControl"
                     Grid.Column="2"
-                    SelectedIndex="0">
+                    SelectedIndex="{Binding ItemSelIndex}">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="正在下载">
-
+            <TabItem Header="待下载">
+                <download:Downloading></download:Downloading>
             </TabItem>
-            <TabItem Header="下载历史">
-
+            <TabItem Header="已完成">
+                <download:Downloaded></download:Downloaded>
             </TabItem>
         </TabControl>
     </Grid>
