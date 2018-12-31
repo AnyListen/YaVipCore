@@ -168,7 +168,7 @@ namespace FishMusic.ViewModel
             {
                 return;
             }
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Music", songResult.SongId + Helper.CommonHelper.GetFormat(downLink));
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Music", songResult.ArtistName + "-" + songResult.SongName + Helper.CommonHelper.GetFormat(downLink));
             var download = new DownloadInfo
             {
                 DownLink = AnyListen.AnyListen.GetRealUrl(downLink),

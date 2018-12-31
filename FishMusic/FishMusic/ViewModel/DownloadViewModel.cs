@@ -163,7 +163,7 @@ namespace FishMusic.ViewModel
                     {
                         return;
                     }
-                    if (filePath.FullName.Contains("ogg"))
+                    if (filePath.FullName.Contains("ogg") || filePath.FullName.Contains("wav"))
                     {
                         var id3V1 = file.GetTag(TagTypes.Id3v1, true);
                         if (!string.IsNullOrEmpty(songResult.SongName))

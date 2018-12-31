@@ -17,6 +17,7 @@
                       MinWidth="920"
                       Height="622"
                       Width="920"
+                      Icon="Resources/Images/fish.ico"
                       ShowTitleBar="False"
                       GlowBrush="LightGray"
                       ShowIconOnTitleBar="False">
