@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using AnyListen.Models;
+using FishMusic.Download;
 using Newtonsoft.Json.Linq;
 
 namespace FishMusic.Helper
@@ -193,6 +194,10 @@ namespace FishMusic.Helper
             {
                 link = "wma";
             }
+            else if (url.ToLower().Contains(".dsf"))
+            {
+                link = "dsf";
+            }
             else
             {
                 link = "mp3";
@@ -278,6 +283,65 @@ namespace FishMusic.Helper
             var sec = (total % 3600) % 60;
             return hour.ToString().PadLeft(2, '0') + ":" + min.ToString().PadLeft(2, '0') + ":" +
                    sec.ToString().PadLeft(2, '0');
+        }
+
+        public static string GetSongName(DownloadSettings downSetting, SongResult songResult)
+        {
+            if (downSetting.EnableUserSetting)
+            {
+                return downSetting.UserName.Replace("%ARTIST%", songResult.ArtistName)
+                    .Replace("%INDEX%", songResult.TrackNum.ToString()).Replace("%SONG%", songResult.SongName)
+                    .Replace("%DISC%", songResult.Disc.ToString());
+            }
+            switch (downSetting.NameSelect)
+            {
+                case 0:
+                    return songResult.SongName;
+                case 1:
+                    if (string.IsNullOrEmpty(songResult.ArtistName))
+                    {
+                        return songResult.SongName;
+                    }
+                    return songResult.ArtistName + " - " + songResult.SongName;
+                case 2:
+                    if (string.IsNullOrEmpty(songResult.ArtistName))
+                    {
+                        return songResult.SongName;
+                    }
+                    return songResult.SongName + " - " + songResult.ArtistName;
+                default:
+                    if (songResult.TrackNum < 0)
+                    {
+                        return songResult.SongName;
+                    }
+                    return songResult.TrackNum.ToString().PadLeft(2, '0') + " - " + songResult.SongName;
+            }
+        }
+
+        public static string GetSongPath(DownloadSettings downSetting, SongResult songResult)
+        {
+            if (downSetting.EnableUserSetting)
+            {
+                var path = downSetting.UserFolder.Replace("%ARTIST%", songResult.ArtistName)
+                    .Replace("%INDEX%", songResult.TrackNum.ToString()).Replace("%SONG%", songResult.SongName)
+                    .Replace("%DISC%", songResult.Disc.ToString());
+                if (!string.IsNullOrEmpty(songResult.Year) && songResult.Year.Length >= 4)
+                {
+                    path = path.Replace("%YEAR%", songResult.Year.Substring(0, 4));
+                }
+                return path;
+            }
+            switch (downSetting.FolderSelect)
+            {
+                case 0:
+                    return "";
+                case 1:
+                    return songResult.ArtistName;
+                case 2:
+                    return songResult.AlbumName;
+                default:
+                    return songResult.ArtistName + "/" + songResult.AlbumName;
+            }
         }
     }
 }

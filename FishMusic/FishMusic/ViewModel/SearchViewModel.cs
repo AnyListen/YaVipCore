@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AnyListen.Helper;
 using AnyListen.Models;
+using CommonServiceLocator;
 using FishMusic.Download;
 using FishMusic.Model;
 using GalaSoft.MvvmLight;
@@ -115,20 +115,22 @@ namespace FishMusic.ViewModel
         public RelayCommand<object> DoubleClickCmd { get; set; }
         public RelayCommand<object> HotWordsClickCmd { get; set; }
 
+
+        private SoftSetting _softSetting;
         public SearchViewModel()
         {
-            EngineList = new List<SearchEngine>()
+            EngineList = new List<SearchEngine>
             {
-                new SearchEngine() {Key = "wy", Name = "网易音乐"},
-                new SearchEngine() {Key = "xm", Name = "虾米音乐"},
-                new SearchEngine() {Key = "qq", Name = "腾讯音乐"},
-                new SearchEngine() {Key = "bd", Name = "百度音乐"},
-                new SearchEngine() {Key = "sn", Name = "索尼音乐"},
-                new SearchEngine() {Key = "kg", Name = "酷狗音乐"},
-                new SearchEngine() {Key = "kw", Name = "酷我音乐"},
+                new SearchEngine {Key = "wy", Name = "网易音乐"},
+                new SearchEngine {Key = "xm", Name = "虾米音乐"},
+                new SearchEngine {Key = "qq", Name = "腾讯音乐"},
+                new SearchEngine {Key = "kg", Name = "酷狗音乐"},
+                new SearchEngine {Key = "kw", Name = "酷我音乐"},
+                new SearchEngine {Key = "bd", Name = "百度音乐"},
+                new SearchEngine {Key = "sn", Name = "索尼音乐"},
             };
 
-            HotWords = new List<string>() {"周杰伦", "丢火车", "α·Pav", "甜梅号", "田馥甄", "华晨宇", "林俊杰"};
+            HotWords = new List<string> {"布衣乐队", "丢火车", "α·Pav", "甜梅号", "田馥甄", "华晨宇", "林俊杰"};
 
             SelectEngine = "xm";
             CurrentPage = "search";
@@ -143,15 +145,16 @@ namespace FishMusic.ViewModel
                 SearchSong();
             });
             CanSearch = true;
+            _softSetting = ServiceLocator.Current.GetInstance<SettingViewModel>().SoftSetting;
         }
 
         private void DownloadSong(object song)
         {
             var songResult = (SongResult) song;
-
             if (songResult.Type == "sn")
             {
-                if (string.IsNullOrEmpty(songResult.FlacUrl) || !songResult.FlacUrl.EndsWith("flac") || !songResult.FlacUrl.EndsWith("wav") || !songResult.FlacUrl.EndsWith("ape"))
+                var songUrl = AnyListen.AnyListen.GetRealUrl(Helper.CommonHelper.GetDownloadUrl(songResult, 0, _softSetting.DownSetting.LossType, false));
+                if (string.IsNullOrEmpty(songUrl) || songUrl.StartsWith("mp3"))
                 {
                     songResult = AnyListen.AnyListen
                         .Search("sn", songResult.SongName + " - " + songResult.ArtistName, 1, 100)
@@ -163,12 +166,20 @@ namespace FishMusic.ViewModel
             {
                 return;
             }
-            var downLink = AnyListen.AnyListen.GetRealUrl(Helper.CommonHelper.GetDownloadUrl(songResult, 0, 0, false));
+            var downLink = AnyListen.AnyListen.GetRealUrl(
+                Helper.CommonHelper.GetDownloadUrl(songResult, songResult.Type == "sn" ? 0 : _softSetting.DownSetting.BitRate,
+                    _softSetting.DownSetting.LossType, false));
             if (string.IsNullOrEmpty(downLink))
             {
                 return;
             }
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Music", songResult.ArtistName + "-" + songResult.SongName + Helper.CommonHelper.GetFormat(downLink));
+            var songName = Helper.CommonHelper.RemoveSpecialChar(Helper.CommonHelper.GetSongName(_softSetting.DownSetting, songResult));
+            var songPath = Helper.CommonHelper.RemoveSpecialChar(Helper.CommonHelper.GetSongPath(_softSetting.DownSetting, songResult));
+            var filePath = Path.Combine(_softSetting.DownSetting.DownPath, songPath, songName + Helper.CommonHelper.GetFormat(downLink));
+            if (File.Exists(filePath))
+            {
+                return;
+            }
             var download = new DownloadInfo
             {
                 DownLink = AnyListen.AnyListen.GetRealUrl(downLink),
@@ -177,7 +188,7 @@ namespace FishMusic.ViewModel
                 Status = DownStatus.WAITING,
                 Progress = 0,
                 CreateTime = DateTime.Now,
-                Id = songResult.SongId
+                Id = Guid.NewGuid().ToString()
             };
             MessengerInstance.Send(download, "DownloadSong");
         }

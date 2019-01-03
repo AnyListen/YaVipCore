@@ -44,6 +44,7 @@ namespace FishMusic.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<PlayViewModel>();
             SimpleIoc.Default.Register<DownloadViewModel>();
+            SimpleIoc.Default.Register<SettingViewModel>();
         }
 
         public MainViewModel Main
@@ -67,6 +68,14 @@ namespace FishMusic.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<DownloadViewModel>();
+            }
+        }
+
+        public SettingViewModel Setting
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<SettingViewModel>();
             }
         }
 

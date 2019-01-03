@@ -101,11 +101,13 @@
     <Compile Include="Converter\TrackTimeConverter.cs" />
     <Compile Include="Converter\UrlConverter.cs" />
     <Compile Include="Download\DownloadInfo.cs" />
+    <Compile Include="Download\DownloadSettings.cs" />
     <Compile Include="Download\XL.cs" />
     <Compile Include="Download\XunleiClient.cs" />
     <Compile Include="Helper\CommonHelper.cs" />
     <Compile Include="Helper\DbHelper.cs" />
     <Compile Include="Model\SearchEngine.cs" />
+    <Compile Include="Model\SoftSetting.cs" />
     <Compile Include="TagLib\Aac\AudioHeader.cs" />
     <Compile Include="TagLib\Aac\BitStream.cs" />
     <Compile Include="TagLib\Aac\File.cs" />
@@ -359,6 +361,7 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PlayViewModel.cs" />
     <Compile Include="ViewModel\SearchViewModel.cs" />
+    <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\Controls\MainPlayControl.xaml.cs">
       <DependentUpon>MainPlayControl.xaml</DependentUpon>
@@ -368,6 +371,9 @@
     </Compile>
     <Compile Include="View\Download\Downloading.xaml.cs">
       <DependentUpon>Downloading.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Download\DownSetting.xaml.cs">
+      <DependentUpon>DownSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>
@@ -433,6 +439,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Download\Downloading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Download\DownSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -99,8 +99,8 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="Play"
-                                                                Height="12"
-                                                                Width="12"
+                                                                Height="14"
+                                                                Width="14"
                                                                 Cursor="Hand"
                                                                 Margin="5">
                                         <i:Interaction.Triggers>
@@ -110,13 +110,13 @@
                                         </i:Interaction.Triggers>
                                     </iconPacks:PackIconMaterial>
                                     <iconPacks:PackIconMaterial Kind="HeartOutline"
-                                                                Height="12"
-                                                                Width="12"
+                                                                Height="14"
+                                                                Width="14"
                                                                 Margin="5"/>
                                     <iconPacks:PackIconMaterial Kind="Download"
                                                                 Cursor="Hand"
-                                                                Height="12"
-                                                                Width="12"
+                                                                Height="14"
+                                                                Width="14"
                                                                 Margin="5">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="MouseLeftButtonDown">
