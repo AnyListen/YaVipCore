@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AnyListen.Models;
 using FishMusic.Download;
+using FishMusic.Model.Setting;
 using Newtonsoft.Json.Linq;
 
 namespace FishMusic.Helper

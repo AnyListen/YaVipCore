@@ -71,6 +71,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -101,13 +102,14 @@
     <Compile Include="Converter\TrackTimeConverter.cs" />
     <Compile Include="Converter\UrlConverter.cs" />
     <Compile Include="Download\DownloadInfo.cs" />
-    <Compile Include="Download\DownloadSettings.cs" />
+    <Compile Include="Model\Setting\DownloadSettings.cs" />
     <Compile Include="Download\XL.cs" />
     <Compile Include="Download\XunleiClient.cs" />
     <Compile Include="Helper\CommonHelper.cs" />
     <Compile Include="Helper\DbHelper.cs" />
     <Compile Include="Model\SearchEngine.cs" />
-    <Compile Include="Model\SoftSetting.cs" />
+    <Compile Include="Model\Setting\PlaySettings.cs" />
+    <Compile Include="Model\Setting\SoftSetting.cs" />
     <Compile Include="TagLib\Aac\AudioHeader.cs" />
     <Compile Include="TagLib\Aac\BitStream.cs" />
     <Compile Include="TagLib\Aac\File.cs" />
@@ -372,7 +374,7 @@
     <Compile Include="View\Download\Downloading.xaml.cs">
       <DependentUpon>Downloading.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Download\DownSetting.xaml.cs">
+    <Compile Include="View\Setting\DownSetting.xaml.cs">
       <DependentUpon>DownSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainControl.xaml.cs">
@@ -383,6 +385,9 @@
     </Compile>
     <Compile Include="View\PlayingPage.xaml.cs">
       <DependentUpon>PlayingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Setting\PlaySetting.xaml.cs">
+      <DependentUpon>PlaySetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SubModel\DiscoveryView.xaml.cs">
       <DependentUpon>DiscoveryView.xaml</DependentUpon>
@@ -399,7 +404,7 @@
     <Compile Include="View\SubModel\SearchView.xaml.cs">
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SubModel\SettingView.xaml.cs">
+    <Compile Include="View\Setting\SettingView.xaml.cs">
       <DependentUpon>SettingView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -442,7 +447,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Download\DownSetting.xaml">
+    <Page Include="View\Setting\DownSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -455,6 +460,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\PlayingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Setting\PlaySetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -478,7 +487,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SubModel\SettingView.xaml">
+    <Page Include="View\Setting\SettingView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

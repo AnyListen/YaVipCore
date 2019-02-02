@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:FishMusic.View.Download"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:converter="clr-namespace:FishMusic.Converter"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
@@ -36,7 +37,13 @@
         </Grid>
 
         <ListView Grid.Row="1" Margin="0 5" BorderThickness="0" 
+                  SelectedItem="{Binding SelectDownloaded}"
                    ItemsSource="{Binding DownloadedCollection}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding OpenFileCmd}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListView.Style>
                 <Style>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"></Setter>

@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="FishMusic.View.Download.DownSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="600">
+    <UserControl.Resources>
+        <Style x:Key="TextBlockHeader" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <Binding Path="Setting" Source="{StaticResource Locator}" />
+    </UserControl.DataContext>
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="10" Orientation="Vertical">
+                <TextBlock Style="{StaticResource TextBlockHeader}" Text="常规设置"/>
+                <TextBlock Margin="0,15,0,0" Text="下载根目录" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBox Width="270" Text="{Binding SoftSetting.DownSetting.DownPath}" IsEnabled="False" />
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding ChangeDownPathCmd}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </StackPanel>
+                <TextBlock Margin="0,15,0,0" Text="音质选择" />
+                <ComboBox Width="270"
+                                          Margin="0,10,0,0"
+                                          HorizontalAlignment="Left"
+                                          SelectedIndex="{Binding SoftSetting.DownSetting.BitRate}">
+                    <ComboBoxItem Content="无损" />
+                    <ComboBoxItem Content="320K" />
+                    <ComboBoxItem Content="192K" />
+                    <ComboBoxItem Content="128K" />
+                </ComboBox>
+                <TextBlock Margin="0,15,0,0" Text="无损偏好" />
+                <ComboBox Width="270"
+                                          Margin="0,10,0,0"
+                                          HorizontalAlignment="Left"
+                                          SelectedIndex="{Binding SoftSetting.DownSetting.LossType}">
+                    <ComboBoxItem Content="FLAC" />
+                    <ComboBoxItem Content="APE" />
+                    <ComboBoxItem Content="WAV" />
+                </ComboBox>
+                <TextBlock Margin="0,15,0,0" Text="音乐命名格式" />
+                <ComboBox Width="270"
+                                          Margin="0,10,0,0"
+                                          HorizontalAlignment="Left"
+                                          SelectedIndex="{Binding SoftSetting.DownSetting.NameSelect}">
+                    <ComboBoxItem Content="歌曲名" />
+                    <ComboBoxItem Content="歌手 - 歌曲名" />
+                    <ComboBoxItem Content="歌曲名 - 歌手" />
+                    <ComboBoxItem Content="歌曲序号 - 歌曲名" />
+                </ComboBox>
+                <TextBlock Margin="0,15,0,0" Text="文件智能分类" />
+                <ComboBox Width="270"
+                                          Margin="0,10,0,0"
+                                          HorizontalAlignment="Left"
+                                          SelectedIndex="{Binding SoftSetting.DownSetting.FolderSelect}">
+                    <ComboBoxItem Content="不分文件夹" />
+                    <ComboBoxItem Content="按歌手分文件夹" />
+                    <ComboBoxItem Content="按专辑分文件夹" />
+                    <ComboBoxItem Content="按歌手\专辑分文件夹" />
+                </ComboBox>
+
+                <TextBlock Style="{StaticResource TextBlockHeader}" Text="其他设置"
+                                   Margin="0,15,0,0"/>
+                <CheckBox Margin="0,10,0,0" Content="下载LRC歌词" IsChecked="{Binding SoftSetting.DownSetting.DownLrc}" />
+                <CheckBox Margin="0,10,0,0" Content="下载歌曲封面" IsChecked="{Binding SoftSetting.DownSetting.DownPic}" />
+                <CheckBox Margin="0,10,0,0" Content="启用高级设置" IsChecked="{Binding SoftSetting.DownSetting.EnableUserSetting}" />
+
+                <TextBlock Style="{StaticResource TextBlockHeader}" Text="高级设置"
+                           Margin="0,15,0,0"/>
+                <TextBlock Margin="0,15,0,0" Text="自定义文件名" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBox Width="270" Text="{Binding SoftSetting.DownSetting.UserName}" />
+                </StackPanel>
+                <TextBlock Margin="0,15,0,0" Text="自定义目录结构" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBox Width="270" Text="{Binding SoftSetting.DownSetting.UserFolder}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

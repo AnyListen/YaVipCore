@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="FishMusic.View.Setting.PlaySetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="TextBlockHeader" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <Binding Path="Setting" Source="{StaticResource Locator}" />
+    </UserControl.DataContext>
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="10" Orientation="Vertical">
+                <TextBlock Style="{StaticResource TextBlockHeader}" Text="播放设置"/>
+                <TextBlock Margin="0,15,0,0" Text="音质选择" />
+                <ComboBox Width="270"
+                                          Margin="0,10,0,0"
+                                          HorizontalAlignment="Left"
+                                          SelectedIndex="{Binding SoftSetting.PlaySetting.PlayQuality}">
+                    <ComboBoxItem Content="无损" />
+                    <ComboBoxItem Content="320K" />
+                    <ComboBoxItem Content="192K" />
+                    <ComboBoxItem Content="128K" />
+                </ComboBox>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

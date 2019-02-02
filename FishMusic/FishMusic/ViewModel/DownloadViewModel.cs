@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using FishMusic.Download;
 using FishMusic.Helper;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using TagLib;
 using TagLib.Id3v2;
 using CommonHelper = AnyListen.Helper.CommonHelper;
@@ -32,6 +33,18 @@ namespace FishMusic.ViewModel
             {
                 _itemSelIndex = value;
                 RaisePropertyChanged("ItemSelIndex");
+            }
+        }
+
+        private DownloadInfo _selectDownloaded;
+
+        public DownloadInfo SelectDownloaded
+        {
+            get => _selectDownloaded;
+            set
+            {
+                _selectDownloaded = value;
+                RaisePropertyChanged("SelectDownloaded");
             }
         }
 
@@ -77,6 +90,9 @@ namespace FishMusic.ViewModel
             }
         }
 
+
+        public RelayCommand<object> OpenFileCmd { get; set; }
+
         public DownloadViewModel()
         {
             InitDownCollection();
@@ -94,6 +110,21 @@ namespace FishMusic.ViewModel
                 }
             }));
             Task.Factory.StartNew(DownloadSong);
+            OpenFileCmd = new RelayCommand<object>(OpenFile);
+        }
+
+        private void OpenFile(object obj)
+        {
+            if (SelectDownloaded == null || string.IsNullOrEmpty(SelectDownloaded.FilePath))
+            {
+                return;
+            }
+            var info = new FileInfo(SelectDownloaded.FilePath);
+            if (info.Exists)
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                System.Diagnostics.Process.Start(info.DirectoryName);
+            }
         }
 
         private void InitDownCollection()

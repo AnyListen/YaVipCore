@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Windows.Forms;
 using FishMusic.Helper;
-using FishMusic.Model;
+using FishMusic.Model.Setting;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace FishMusic.ViewModel
 {
@@ -30,9 +32,11 @@ namespace FishMusic.ViewModel
             }
         }
 
+
+        public RelayCommand<object> ChangeDownPathCmd { get; set; }
+
         public SettingViewModel()
         {
-            SelectIndex = 3;
             using (var db = DbHelper.GetDatabase())
             {
                 var coll = db.GetCollection<SoftSetting>();
@@ -48,6 +52,17 @@ namespace FishMusic.ViewModel
                 }
             }
             SoftSetting.DownSetting.PropertyChanged += DownSetting_PropertyChanged;
+            SoftSetting.PlaySetting.PropertyChanged += DownSetting_PropertyChanged;
+            ChangeDownPathCmd = new RelayCommand<object>(ChangeDownPath);
+        }
+
+        private void ChangeDownPath(object obj)
+        {
+            var dialog = new FolderBrowserDialog();
+            if (DialogResult.OK == dialog.ShowDialog())
+            {
+                SoftSetting.DownSetting.DownPath = dialog.SelectedPath;
+            }
         }
 
         private void DownSetting_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

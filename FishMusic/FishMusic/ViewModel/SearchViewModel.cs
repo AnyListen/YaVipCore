@@ -8,6 +8,7 @@ using AnyListen.Models;
 using CommonServiceLocator;
 using FishMusic.Download;
 using FishMusic.Model;
+using FishMusic.Model.Setting;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -127,7 +128,7 @@ namespace FishMusic.ViewModel
                 new SearchEngine {Key = "kg", Name = "酷狗音乐"},
                 new SearchEngine {Key = "kw", Name = "酷我音乐"},
                 new SearchEngine {Key = "bd", Name = "百度音乐"},
-                new SearchEngine {Key = "sn", Name = "索尼音乐"},
+                //new SearchEngine {Key = "sn", Name = "索尼音乐"},
             };
 
             HotWords = new List<string> {"布衣乐队", "丢火车", "α·Pav", "甜梅号", "田馥甄", "华晨宇", "林俊杰"};
@@ -200,7 +201,7 @@ namespace FishMusic.ViewModel
                 return;
             }
 
-            if (SelectSong == null)
+            if (SelectSong == null || string.IsNullOrEmpty(SelectSong.SongId))
             {
                 SelectSong = (SongResult)song;
             }

@@ -8,8 +8,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using AnyListen.Models;
+using CommonServiceLocator;
 using FishMusic.Download;
 using FishMusic.Helper;
+using FishMusic.Model.Setting;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MahApps.Metro.IconPacks;
@@ -223,6 +225,7 @@ namespace FishMusic.ViewModel
 
         #endregion
 
+        private SoftSetting _softSetting;
 
         public PlayViewModel()
         {
@@ -271,15 +274,10 @@ namespace FishMusic.ViewModel
                     return;
                 }
                 PlayingSong = s;
-                if (s.Type == "sn" || !string.IsNullOrEmpty(s.FlacUrl))
-                {
-                    PlaySong(AnyListen.AnyListen.GetRealUrl(string.IsNullOrEmpty(s.FlacUrl) ? s.CopyUrl : s.FlacUrl));
-                }
-                else
-                {
-                    PlaySong(AnyListen.AnyListen.GetRealUrl(s.CopyUrl));
-                }
+                var songUrl = AnyListen.AnyListen.GetRealUrl(CommonHelper.GetDownloadUrl(s, 0, _softSetting.DownSetting.LossType, false));
+                PlaySong(songUrl);
             }));
+            _softSetting = ServiceLocator.Current.GetInstance<SettingViewModel>().SoftSetting;
         }
 
         private void GridMouseMove(object obj)
@@ -395,7 +393,7 @@ namespace FishMusic.ViewModel
                 }
                 else
                 {
-                    PlaySong(@"http://itwusun.com/files/music/xm_320_1770867412.mp3?sign=9a69f6320e963aad8359c821db79288f");
+                    PlaySong(@"https://luooqi.com/music/cloud/xm_320_1770824323.mp3?sign=1943de79f63ea6fb1ad91775a1d6167a");
                 }
             }
         }
