@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="FishMusic.View.Setting.About"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:behaviors="clr-namespace:FishMusic.Behaviors"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBlock" x:Key="TextBlockHeader">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+            </Style>
+            <Style TargetType="Hyperlink" x:Key="HyperlinkStyle">
+                <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"/>
+                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+            </Style>
+            <Style TargetType="Hyperlink" BasedOn="{StaticResource HyperlinkStyle}"/>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer Margin="10">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="鱼声音乐" FontSize="24" FontFamily="Segoe UI Light"/>
+                <StackPanel Orientation="Horizontal"  Margin="0,5,0,0">
+                    <TextBlock Text="Version: "/>
+                    <TextBlock Text="5.0.0 Pre4" FontWeight="Bold"/>
+                    <TextBlock Text="Beta" Foreground="{DynamicResource AccentColorBrush}" FontWeight="Bold" Margin="5,0,0,0"/>
+                </StackPanel>
+                <TextBlock Text="Copyright © 2013-2019 AnyListen. All Rights Reserved." Margin="0,10,0,0"/>
+            </StackPanel>
+            <TextBlock behaviors:TextBlockBehavior.UpperText="代码开源" Style="{StaticResource TextBlockHeader}" Margin="0,16,0,0"/>
+            <Grid Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/AnyListen/YaVipCore" RequestNavigate="Hyperlink_RequestNavigate"  Style="{StaticResource HyperlinkStyle}">
+                        <TextBlock Text="AnyListen/YaVipCore" Foreground="DodgerBlue"/>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Text="易用的小众音乐软件" Grid.Column="1" TextWrapping="Wrap" Foreground="{DynamicResource BlackBrush}"/>
+            </Grid>
+            <TextBlock behaviors:TextBlockBehavior.UpperText="其他" Style="{StaticResource TextBlockHeader}" Margin="0,12,0,0"/>
+            <TextBlock Text="本软件完全免费，仅用于个人学习交流，禁止使用本软件从事任何商业用途！" 
+                       TextWrapping="Wrap" Foreground="OrangeRed" Margin="0, 6, 0, 0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -16,28 +16,28 @@ namespace AnyListen.Music
     {
         private const string MusicIp = "http://mobileoc.music.tc.qq.com/";
 
-        private static string _txToken;
-        private static DateTime _lastUpdateTime = DateTime.MinValue;
-        private const string Vkdata = "<root><uid>3597552139</uid><sid>201701022335383597552139</sid><v>90</v><cv>70003</cv><ct>1</ct><OpenUDID>YYFM</OpenUDID><mcc>460</mcc><mnc>01</mnc><chid>001</chid><webp>0</webp><gray>0</gray><patch>105</patch><jailbreak>0</jailbreak><nettype>2</nettype><qq>123456</qq><authst>000158684fba0058e4775ffac60646f56c8e8a80f239509d0c8823cb5d9b4028425a67a293e5050cae54479f0724faccdae931a1b9b54e1766bd815a882625e2298cee1cce9a80249075a16f0a54d86bd16122bb368b8e304ede177f94622cd1</authst><localvip>2</localvip><cid>352</cid><platform>ios</platform><musicname>M8000047jzQv0sV4pz.mp3</musicname><downloadfrom>0</downloadfrom></root>";
-
-        private static void UpdateToken()
-        {
-            if (string.IsNullOrEmpty(_txToken) || DateTime.Now - _lastUpdateTime > new TimeSpan(12,0,0))
-            {
-                try
-                {
-                    var response = new HttpClient().PostAsync("http://acc.music.qq.com/base/fcgi-bin/fcg_music_express_mobile2.fcg", new StringContent(Vkdata)).Result;
-                    var buffer = response.Content.ReadAsByteArrayAsync().Result;
-                    var resultStr = Decompress(buffer);
-                    _txToken = Regex.Match(resultStr, @"(?<=mp3"">)[^<]+").Value;
-                    _lastUpdateTime = DateTime.Now;
-                }
-                catch (Exception)
-                {
-                    //
-                }
-            }
-        }
+//        private static string _txToken;
+//        private static DateTime _lastUpdateTime = DateTime.MinValue;
+//        private const string Vkdata = "<root><uid>3597552139</uid><sid>201701022335383597552139</sid><v>90</v><cv>70003</cv><ct>1</ct><OpenUDID>YYFM</OpenUDID><mcc>460</mcc><mnc>01</mnc><chid>001</chid><webp>0</webp><gray>0</gray><patch>105</patch><jailbreak>0</jailbreak><nettype>2</nettype><qq>123456</qq><authst>000158684fba0058e4775ffac60646f56c8e8a80f239509d0c8823cb5d9b4028425a67a293e5050cae54479f0724faccdae931a1b9b54e1766bd815a882625e2298cee1cce9a80249075a16f0a54d86bd16122bb368b8e304ede177f94622cd1</authst><localvip>2</localvip><cid>352</cid><platform>ios</platform><musicname>M8000047jzQv0sV4pz.mp3</musicname><downloadfrom>0</downloadfrom></root>";
+//
+//        private static void UpdateToken()
+//        {
+//            if (string.IsNullOrEmpty(_txToken) || DateTime.Now - _lastUpdateTime > new TimeSpan(12,0,0))
+//            {
+//                try
+//                {
+//                    var response = new HttpClient().PostAsync("http://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg", new StringContent(Vkdata)).Result;
+//                    var buffer = response.Content.ReadAsByteArrayAsync().Result;
+//                    var resultStr = Decompress(buffer);
+//                    _txToken = Regex.Match(resultStr, @"(?<=mp3"">)[^<]+").Value;
+//                    _lastUpdateTime = DateTime.Now;
+//                }
+//                catch (Exception)
+//                {
+//                    //
+//                }
+//            }
+//        }
 
         private static string Decompress(byte[] baseBytes)
         {
@@ -151,6 +151,7 @@ namespace AnyListen.Music
                     Type = "qq"
                 };
                 var mid = j["strMediaMid"]?.ToString() ?? (j["media_mid"]?.ToString() ?? j["songmid"]?.ToString());
+                var oriMid = j["songmid"]?.ToString() ?? j["media_mid"]?.ToString();
                 if (string.IsNullOrEmpty(mid))
                 {
                     song.BitRate = "320K";
@@ -159,32 +160,33 @@ namespace AnyListen.Music
                 }
                 else
                 {
+                    var newId = oriMid + "-" + mid;
                     if (j["size128"].ToString() != "0")
                     {
                         song.BitRate = "128K";
-                        song.LqUrl = CommonHelper.GetSongUrl("qq", "128", mid, "mp3");
+                        song.LqUrl = CommonHelper.GetSongUrl("qq", "128", newId, "mp3");
                     }
                     if (j["sizeogg"].ToString() != "0")
                     {
                         song.BitRate = "192K";
-                        song.HqUrl = CommonHelper.GetSongUrl("qq", "192", mid, "ogg");
+                        song.HqUrl = CommonHelper.GetSongUrl("qq", "192", newId, "ogg");
                     }
                     if (j["size320"].ToString() != "0")
                     {
                         song.BitRate = "320K";
-                        song.SqUrl = CommonHelper.GetSongUrl("qq", "320", mid, "mp3");
+                        song.SqUrl = CommonHelper.GetSongUrl("qq", "320", newId, "mp3");
                     }
                     if (j["sizeape"].ToString() != "0")
                     {
                         song.BitRate = "无损";
-                        song.ApeUrl = CommonHelper.GetSongUrl("qq", "999", mid, "ape");
+                        song.ApeUrl = CommonHelper.GetSongUrl("qq", "999", newId, "ape");
                     }
                     if (j["sizeflac"].ToString() != "0")
                     {
                         song.BitRate = "无损";
-                        song.FlacUrl = CommonHelper.GetSongUrl("qq", "999", mid, "flac");
+                        song.FlacUrl = CommonHelper.GetSongUrl("qq", "999", newId, "flac");
                     }
-                    song.CopyUrl = CommonHelper.GetSongUrl("qq", "320", mid, "mp3");
+                    song.CopyUrl = CommonHelper.GetSongUrl("qq", "320", newId, "mp3");
                 }
                 if (!string.IsNullOrEmpty(song.MvId))
                 {
@@ -193,8 +195,8 @@ namespace AnyListen.Music
                 }
                 if (string.IsNullOrEmpty(song.AlbumId))
                 {
-                    song.SmallPic = "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/2311.jpg";
-                    song.PicUrl = "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/23.jpg";
+                    song.SmallPic = "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
+                    song.PicUrl = "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
                 }
                 else
                 {
@@ -411,15 +413,22 @@ namespace AnyListen.Music
                         return "http://stream.qqmusic.tc.qq.com/" + id + ".mp3";
                 }
             }
-            UpdateToken();
+
+            var midStr = "";
+            if (id.Contains("-"))
+            {
+                var arr = id.Split('-');
+                id = arr[0];
+                midStr = arr[1];
+            }
             string fileName;
             switch (format)
             {
                 case "ape":
-                    fileName = "A000" + id + ".ape";
+                    fileName = "A000" + midStr + ".ape";
                     break;
                 case "flac":
-                    fileName = "F000" + id + ".flac";
+                    fileName = "F000" + midStr + ".flac";
                     break;
                 case "ogg":
                     fileName = "O600" + id + ".ogg";
@@ -431,7 +440,32 @@ namespace AnyListen.Music
                     fileName = (quality == "128" ? "M500" : "M800") + id + ".mp3";
                     break;
             }
-            return MusicIp + fileName + "?vkey=" + _txToken + "&guid=YYFM&uin=123456&fromtag=53";
+            var token = GetToken(id, fileName);
+            if (string.IsNullOrEmpty(token))
+            {
+                return GetWxUrl(id);
+            }
+            return "http://isure.stream.qqmusic.qq.com/" + fileName + "?vkey=" +token + "&guid=YYFM&uin=12345&fromtag=151";
+        }
+
+        private static string GetWxUrl(string id)
+        {
+            var url = "https://mp.weixin.qq.com/mp/qqmusic?action=get_song_info&song_mid=" + id;
+            var html = CommonHelper.GetHtmlContent(url);
+            return Regex.Match(html, @"(?<=song_play_url_standard[\S\s]{0,10})http[^""]+").Value.Replace("\\", "");
+        }
+
+        private static string GetToken(string mid, string fileName)
+        {
+            var data = "<root><uid>12345</uid><sid>201905262327071440125452</sid><cv>60103</cv><ct>6</ct><OpenUDID>YYFM</OpenUDID><udid/><nettype>2</nettype><eno>10.14.4</eno><cid>205361747</cid><qq>12345</qq><uin>12345</uin><pwd/><mt>MacBookPro15</mt><chid>1</chid><json>1</json><chloginstyle>0</chloginstyle><v/><authst>00015cf1ea08007099</authst><auth>00015cf1ea08007099</auth><pauth/><wid>7184860689116975963</wid><songmid>" + mid + "</songmid><filename>" + fileName + "</filename><songtype>13</songtype><localvip>2</localvip><cid>205361747</cid><platform>mac</platform><downloadfrom>0</downloadfrom></root>";
+            var response = new HttpClient().PostAsync("http://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg", new StringContent(data)).Result;
+            var buffer = response.Content.ReadAsByteArrayAsync().Result;
+            var html = Decompress(buffer);
+            if (string.IsNullOrEmpty(html))
+            {
+                return "";
+            }
+            return Regex.Match(html, @"(?<=vkey"":"")[^""]+").Value;
         }
 
         private const string TxCookie =

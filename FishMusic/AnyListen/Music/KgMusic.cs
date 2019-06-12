@@ -345,13 +345,13 @@ namespace AnyListen.Music
                 var html = CommonHelper.GetHtmlContent("http://ioscdn.kugou.com/api/v3/album/info?albumid=" + id + "&version=7910");
                 if (string.IsNullOrEmpty(html))
                 {
-                    return quality == "low" ? "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/2311.jpg" : "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/23.jpg";
+                    return quality == "low" ? "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29" : "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
                 }
                 html = CommonHelper.UnicodeToString(html);
                 var json = JObject.Parse(html);
                 if (string.IsNullOrEmpty(json["data"]?.ToString()))
                 {
-                    return quality == "low" ? "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/2311.jpg" : "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/23.jpg";
+                    return quality == "low" ? "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29" : "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
                 }
                 return json["data"]["imgurl"].ToString().Replace("{size}", quality == "high" ? "480" : "120");
             }
@@ -383,7 +383,7 @@ namespace AnyListen.Music
                                                 songName.Split('-')[0].Trim() + "&size=" + (quality == "high" ? "480" : "120"));
                 if (string.IsNullOrEmpty(html) || html.Contains("未能找到"))
                 {
-                    return "http://yyfm.oss-cn-qingdao.aliyuncs.com/img/mspy.jpg";
+                    return "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
                 }
                 return Regex.Match(html, @"(?<=url"":"")[^""]+").Value.Replace("\\", "");
             }
@@ -445,11 +445,29 @@ namespace AnyListen.Music
             //}
 
             //http://trackercdnbj.kugou.com/i/v2/?pid=2&mid=127347821333410747944412026415356129954&cmd=26&token=&hash=540f7d06f0d4afefb5483414a02aa467&area_code=1&behavior=download&appid=1005&module=&vipType=-4&userid=0&album_id=4461429&key=b147da2705194b786bcbe849dafcd2f5&version=8918&with_res_tag=1
+            //http://trackercdnbj.kugou.com/i/v2/?cmd=23&hash=e781dcef06208795b12d32f717f5ccc1&key=989c280a8c54a94c94c2fa9feb495446&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&behavior=play&appid=2065&version=1020&cdnBackup=1&album_id=2048266&area_code=1
+            //http://trackercdnbj.kugou.com/i/v2/?cmd=24&hash=317870822aeb496ec7aa17d413d48856&key=4e62ba1c6c9f7df0d463edb5fcc730f2&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&appid=2065&mid=6cf398f4c96649ca91128e816df9ec36&version=1020&token=14b06d3fa7a3b140504b07167050f668920758091ca8bd928ae873c37dd934ca&vipType=2&userid=564154792&behavior=play&module=locallist&album_id=1786888&area_code=1&cdnBackup=1
+
+            //            var link =
+//                $"http://trackercdnbj.kugou.com/i/v2/?pid=2&mid=1990&cmd=26&token=&hash={id}&area_code=1&behavior=download&appid=1005&module=&vipType=-4&userid=0&key={CommonHelper.Md5(id + "kgcloudv210051990" + "0")}&version=8918&with_res_tag=1";
+
+//            var link =
+//                $"http://trackercdnbj.kugou.com/i/v2/?cmd=24&hash={id}&key={CommonHelper.Md5(id + "kgcloudv220651990" + "564154792")}&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&appid=2065&mid=1990&version=1020&token=14b06d3fa7a3b140504b07167050f668920758091ca8bd928ae873c37dd934ca&vipType=2&userid=564154792&behavior=play&module=locallist&area_code=1&cdnBackup=1";
+
+            //http://trackercdnbj.kugou.com/i/v2/?cmd=23&hash=ba76b1558c857e1df850283269bef998&key=7fab6e911208ffe930a6402db6fc62a4&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&behavior=play&appid=2065&version=1020&cdnBackup=1&album_id=553045&area_code=1
 
             var link =
-                $"http://trackercdnbj.kugou.com/i/v2/?pid=2&mid=1990&cmd=26&token=&hash={id}&area_code=1&behavior=download&appid=1005&module=&vipType=-4&userid=0&key={CommonHelper.Md5(id + "kgcloudv210051990" + "0")}&version=8918&with_res_tag=1";
+                $"http://trackercdnbj.kugou.com/i/v2/?cmd=23&hash={id}&key={CommonHelper.Md5(id + "kgcloudv2")}&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&behavior=play&appid=2065&version=1020&cdnBackup=1&area_code=1";
+
             var mp3Html = CommonHelper.GetHtmlContent(link);
             var result = Regex.Match(mp3Html, @"(?<=url"":\[?"")[^""]+").Value.Replace("\\", "");
+
+            if (string.IsNullOrEmpty(result))
+            {
+                link = $"http://trackercdnbj.kugou.com/i/v2/?cmd=24&hash={id}&key={CommonHelper.Md5(id + "kgcloudv220651990" + "564154792")}&pid=1&vipToken=f887ca8d97c424065c14394d94c6e537&appid=2065&mid=1990&version=1020&token=14b06d3fa7a3b140504b07167050f668920758091ca8bd928ae873c37dd934ca&vipType=2&userid=564154792&behavior=play&module=locallist&area_code=1&cdnBackup=1";
+                mp3Html = CommonHelper.GetHtmlContent(link);
+                result = Regex.Match(mp3Html, @"(?<=url"":\[?"")[^""]+").Value.Replace("\\", "");
+            }
             return string.IsNullOrEmpty(result) ? GetWebUrl(id) : result;
         }
 

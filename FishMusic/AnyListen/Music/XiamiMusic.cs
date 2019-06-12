@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using AnyListen.Helper;
@@ -18,18 +17,18 @@ namespace AnyListen.Music
         private static DateTime _xmLastUpdate = DateTime.MinValue;
         private static void UpdateXmToken()
         {
+            //cna="mwGIFQabwA8CAdvoIVtV7N8b"; uidXM=14345449; _m_h5_tk=b9ee042ad4b616035d7864a2d41b8842_1560358851910; _m_h5_tk_enc=281d3d8188785edaf1b45e3f0f9fb19a
             if (!string.IsNullOrEmpty(_xmCookie) && (DateTime.Now - _xmLastUpdate <= new TimeSpan(0, 1, 0))) return;
-            var data = "{\"requestStr\":\"{\\\"header\\\":{\\\"platformId\\\":\\\"h5\\\",\\\"callId\\\":1493962280189,\\\"appVersion\\\":1000000,\\\"resolution\\\":\\\"600*1067\\\"}}\"}";
             var time = CommonHelper.GetTimeSpan(true);
-            var signData = "" + "&" + time + "&12574478&" + data;
+            var data = "{\"requestStr\":\"{\\\"header\\\":{\\\"platformId\\\":\\\"h5\\\",\\\"callId\\\":"+ time + ",\\\"appVersion\\\":1000000,\\\"resolution\\\":\\\"600*1067\\\"},\\\"model\\\":{\\\"listId\\\":\\\"873784428\\\",\\\"isFullTags\\\":false,\\\"pagingVO\\\":{\\\"pageSize\\\":1000,\\\"page\\\":1}}}\"}";
+            var signData = "" + "&" + time + "&23649156&" + data;
             var sign = CommonHelper.Md5(signData);
-            var url = $"https://h5api.m.xiami.com/h5/mtop.alimusic.operation.dailyxiamiservice.getcontent/1.0/?appKey=12574478&t={time}&sign={sign}&api=mtop.alimusic.operation.dailyxiamiservice.getcontent&v=1.0&type=jsonp&timeout=20000&dataType=jsonp&callback=mtopjsonp1&data=%7B%22requestStr%22%3A%22%7B%5C%22header%5C%22%3A%7B%5C%22platformId%5C%22%3A%5C%22h5%5C%22%2C%5C%22callId%5C%22%3A1493962280189%2C%5C%22appVersion%5C%22%3A1000000%2C%5C%22resolution%5C%22%3A%5C%22600*1067%5C%22%7D%7D%22%7D";
+            var url = $"https://h5api.m.xiami.com/h5/mtop.alimusic.music.list.collectservice.getcollectdetail/1.0/?jsv=2.4.0&appKey=23649156&t={time}&sign={sign}&api=mtop.alimusic.music.list.collectservice.getcollectdetail&v=1.0&type=originaljsonp&timeout=200000&dataType=originaljsonp&closeToast=true&callback=mtopjsonp1&data=%7B%22requestStr%22%3A%22%7B%5C%22header%5C%22%3A%7B%5C%22platformId%5C%22%3A%5C%22h5%5C%22%2C%5C%22callId%5C%22%3A{time}%2C%5C%22appVersion%5C%22%3A1000000%2C%5C%22resolution%5C%22%3A%5C%221920*375%5C%22%7D%2C%5C%22model%5C%22%3A%7B%5C%22listId%5C%22%3A%5C%22873784428%5C%22%2C%5C%22isFullTags%5C%22%3Afalse%2C%5C%22pagingVO%5C%22%3A%7B%5C%22pageSize%5C%22%3A1000%2C%5C%22page%5C%22%3A1%7D%7D%7D%22%7D";
             var cookie = CommonHelper.GetHtmlCookie(url, "");
             if (string.IsNullOrEmpty(cookie))
             {
                 return;
             }
-            _xmLastUpdate = DateTime.Now;
             var tempCookie = "";
             var arr = cookie.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var s in arr)
@@ -41,34 +40,55 @@ namespace AnyListen.Music
                 }
                 tempCookie += (s + ";");
             }
+            var cnaCookie = CommonHelper.GetHtmlCookie("http://log.mmstat.com/eg.js", "");
+            if (string.IsNullOrEmpty(cnaCookie))
+            {
+                return;
+            }
+            var cna = Regex.Match(cnaCookie, "(?<=cna=)[^;]+").Value;
             _xmCookie = tempCookie.Replace("Path=/", "");
+            _xmCookie = $"cna=\"{cna}\"; uidXM=$UID$; {_xmCookie}";
+            _xmLastUpdate = DateTime.Now;
         }
 
-        private static string GetXmUrl(string method = "mtop.alimusic.recommend.songservice.gethotsongs", string model = "\\\"model\\\":{\\\"language\\\":0,\\\"pagingVO\\\":{\\\"page\\\":1,\\\"pageSize\\\":1}}", string token = "66f5b6a91a718cf9a696ac42599fb7ea", string uid = "274841932")
+        private static string GetXmUrl(string method = "mtop.alimusic.recommend.songservice.gethotsongs", string model = "\\\"model\\\":{\\\"language\\\":0,\\\"pagingVO\\\":{\\\"page\\\":1,\\\"pageSize\\\":1}}", string token = "", string uid = "0")
         {
-            //{"requestStr":"{\"header\":{\"platformId\":\"win\",\"remoteIp\":\"172.17.16.175\",\"callId\":1510626410633,\"sign\":\"d0e1b20a985f20aa3f355864ec75111e\",\"appId\":200,\"deviceId\":\"e3f9fcd22f3d535818ddcaa98d454050badc3c5303bd98af8b6984e6088fa702\",\"accessToken\":\"66f5b6a91a718cf9a696ac42599111ea\",\"openId\":274841942,\"network\":1,\"appVersion\":3000900,\"resolution\":\"1178*704\",\"utdid\":\"e3f9fcd22f3d535818ddcaa98d454050badc3c5303bd98af8b6984e6088fa702\"},\"model\":{\"limit\":100,\"page\":1,\"userId\":274841932}}"}
+            string data;
             var time = CommonHelper.GetTimeSpan(true);
-            var data = "{\"requestStr\":\"{\\\"header\\\":{\\\"platformId\\\":\\\"win\\\",\\\"remoteIp\\\":\\\"172.17.16.175\\\",\\\"callId\\\":" + time + ",\\\"appId\\\":200,\\\"accessToken\\\":\\\"" + token + "\\\",\\\"openId\\\":" + uid + ",\\\"network\\\":1,\\\"appVersion\\\":3000900,\\\"resolution\\\":\\\"1178 *704\\\",\\\"utdid\\\":\\\"e3f9fcd22f3d535818ddcaa98d454050badc3c5303bd98af8b6984e6088fa702\\\"}," + model + "}\"}";
-            var signData = _xmToken + "&" + time + "&12574478&" + data;
+            //{"requestStr":"{\"header\":{\"platformId\":\"h5\",\"callId\":1560353199925,\"appVersion\":1000000,\"resolution\":\"2560x1440\",\"appId\":200,\"openId\":0},\"model\":{\"key\":\"Existence\",\"pagingVO\":{\"page\":1,\"pageSize\":10}}}"}
+            if (string.IsNullOrEmpty(token))
+            {
+                data = "{\"requestStr\":\"{\\\"header\\\":{\\\"platformId\\\":\\\"h5\\\",\\\"callId\\\":" + time + ",\\\"appVersion\\\":1000000,\\\"appId\\\":200,\\\"openId\\\":0,\\\"resolution\\\":\\\"2560x1440\\\"}," + model + "}\"}";
+            }
+            else
+            {
+                data = "{\"requestStr\":\"{\\\"header\\\":{\\\"platformId\\\":\\\"h5\\\",\\\"callId\\\":" + time + ",\\\"appVersion\\\":1000000,\\\"accessToken\\\":\\\"" + token + "\\\",\\\"appId\\\":200,\\\"openId\\\":" + uid + ",\\\"network\\\":1,\\\"resolution\\\":\\\"2560x1440\\\"}," + model + "}\"}";
+            }
+            var signData = _xmToken + "&" + time + "&23649156&" + data;
             var sign = CommonHelper.Md5(signData);
             var url =
-                "http://h5api.m.xiami.com/h5/" + method + "/1.0/?appKey=12574478&t=" + time + "&sign=" + sign + "&v=1.0&type=originaljson&dataType=json&api=" + method + "&data=" + HttpUtility.UrlEncode(data);
+                "https://acs.m.xiami.com/h5/" + method + "/1.0/?jsv=2.4.0&appKey=23649156&t=" + time + "&sign=" + sign + "&v=1.0&AntiCreep=true&AntiFlood=true&type=originaljson&dataType=originaljsonp&api=" + method + "&data=" + HttpUtility.UrlEncode(data);
             return url;
         }
 
-        private static string GetXmHtml(string method, string model, string token = "66f5b6a91a718cf9a696ac42599fb7ea", string uid = "274841932")
+        private static string getUid()
         {
-            if (string.IsNullOrEmpty(token))
-            {
-                token = "66f5b6a91a718cf9a696ac42599f111a";
-            }
-            if (string.IsNullOrEmpty(uid))
-            {
-                uid = "274841742";
-            }
+            return new Random(Convert.ToInt32(CommonHelper.GetTimeSpan(true).ToString().Substring(5))).Next(500, 50000000).ToString();
+        }
+
+        private static string GetXmHtml(string method, string model, string token = "", string uid = "")
+        {
             UpdateXmToken();
             var url = GetXmUrl(method, model, token, uid);
-            return CommonHelper.GetHtmlContent(url, 8, new Dictionary<string, string> { { "Cookie", _xmCookie } });
+            return CommonHelper.GetHtmlContent(url, 8, new Dictionary<string, string>
+            {
+                { "Pragma", "no-cache"},
+                { "Cache-Control", "no-cache"},
+                { "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"},
+                { "Accept", "*/*"},
+                { "Connection", "keep-alive"},
+                { "Cookie", _xmCookie.Replace("$UID$", getUid()) }
+            });
         }
 
         //private static string GetXmHtmlWithUser(string method, string data)

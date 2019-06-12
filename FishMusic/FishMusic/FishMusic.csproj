@@ -92,6 +92,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\ContentControlBehavior.cs" />
+    <Compile Include="Behaviors\TextBlockBehavior.cs" />
     <Compile Include="Converter\BitmapConverter.cs" />
     <Compile Include="Converter\BytesSizeConverter.cs" />
     <Compile Include="Converter\ControlColorConverter.cs" />
@@ -374,6 +376,9 @@
     <Compile Include="View\Download\Downloading.xaml.cs">
       <DependentUpon>Downloading.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Setting\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Setting\DownSetting.xaml.cs">
       <DependentUpon>DownSetting.xaml</DependentUpon>
     </Compile>
@@ -444,6 +449,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Download\Downloading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Setting\About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

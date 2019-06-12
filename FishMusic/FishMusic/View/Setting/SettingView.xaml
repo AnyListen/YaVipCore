@@ -57,7 +57,7 @@
                 <download:DownSetting/>
             </TabItem>
             <TabItem Header="关于">
-
+                <setting:About />
             </TabItem>
         </TabControl>
     </Grid>

@@ -126,26 +126,28 @@ namespace AnyListen.Music
                     {
                         var link = j["auditionUrl"].ToString();
                         song.LqUrl = song.HqUrl = song.SqUrl = song.CopyUrl = link;
-                        link = link.Replace("/Audition/", "/Audio/").Replace(".mp3", "");
-                        if (j["downloadUrl"] != null)
-                        {
-                            if (j["downloadUrl"].ToString().StartsWith("http"))
-                            {
-                                link = j["downloadUrl"].ToString();
-                            }
-                        }
-                        if (link.Contains(".flac"))
-                        {
-                            song.FlacUrl = link;
-                        }
-                        else if (link.Contains(".ape"))
-                        {
-                            song.ApeUrl = link;
-                        }
-                        else
-                        {
-                            song.WavUrl = link;
-                        }
+                        song.FlacUrl = CommonHelper.GetSongUrl("sn", CommonHelper.EncodeBase64(Encoding.UTF8, j["downloadUrl"].ToString()), song.SongId, "flac");
+
+//                        link = link.Replace("/Audition/", "/Audio/").Replace(".mp3", "");
+//                        if (j["downloadUrl"] != null)
+//                        {
+//                            if (j["downloadUrl"].ToString().StartsWith("http"))
+//                            {
+//                                link = j["downloadUrl"] + "/44100/001.flac";
+//                            }
+//                        }
+//                        if (link.Contains(".flac"))
+//                        {
+//                            song.FlacUrl = link;
+//                        }
+//                        else if (link.Contains(".ape"))
+//                        {
+//                            song.ApeUrl = link;
+//                        }
+//                        else
+//                        {
+//                            song.WavUrl = link;
+//                        }
                     }
                     list.Add(song);
                 }
@@ -234,26 +236,28 @@ namespace AnyListen.Music
                 {
                     var link = j["auditionUrl"].ToString();
                     song.LqUrl = song.HqUrl = song.SqUrl = song.CopyUrl = link;
-                    link = link.Replace("/Audition/", "/Audio/").Replace(".mp3", "");
-                    if (j["downloadUrl"] != null)
-                    {
-                        if (j["downloadUrl"].ToString().StartsWith("http"))
-                        {
-                            link = j["downloadUrl"].ToString();
-                        }
-                    }
-                    if (link.Contains(".flac"))
-                    {
-                        song.FlacUrl = link;
-                    }
-                    else if (link.Contains(".ape"))
-                    {
-                        song.ApeUrl = link;
-                    }
-                    else
-                    {
-                        song.WavUrl = link;
-                    }
+                    song.FlacUrl = CommonHelper.GetSongUrl("sn", "1000", song.SongId, "flac");
+
+                    //                    link = link.Replace("/Audition/", "/Audio/").Replace(".mp3", "");
+                    //                    if (j["downloadUrl"] != null)
+                    //                    {
+                    //                        if (j["downloadUrl"].ToString().StartsWith("http"))
+                    //                        {
+                    //                            link = j["downloadUrl"].ToString();
+                    //                        }
+                    //                    }
+                    //                    if (link.Contains(".flac"))
+                    //                    {
+                    //                        song.FlacUrl = link;
+                    //                    }
+                    //                    else if (link.Contains(".ape"))
+                    //                    {
+                    //                        song.ApeUrl = link;
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        song.WavUrl = link;
+                    //                    }
                 }
                 list.Add(song);
             }
@@ -287,7 +291,30 @@ namespace AnyListen.Music
 
         public string GetSongUrl(string id, string quality, string format)
         {
-            return null;
+            return GetUrl(id, quality, format);
         }
+
+        private static string GetUrl(string id, string quality, string format)
+        {
+            var data =
+                "{\"content\":{\"musicId\":\"" + id + "\"},\"header\":{\"sonySelectId\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\",\"sdkNo\":22,\"manufacturer\":\"oppo\",\"imei\":\"865166029384834\",\"channel\":\"xiaomi\",\"model\":\"r8207\",\"version\":\"2.2.6\"}}";
+
+            var html = CommonHelper.PostData("https://api.sonyselect.com.cn/streaming/music/get_detail/v1/android",
+                new Dictionary<string, string>
+                {
+                    {"JSON", data}
+                }, 1);
+            var json = JObject.Parse(html)["content"];
+            if (format == "jpg")
+            {
+                return json["icon"].Value<string>();
+            }
+            var link = CommonHelper.DecodeBase64(Encoding.UTF8, quality);
+            link = link.Replace("", "").Replace("", "").Replace("", "");
+            return link;
+        }
+
+
+
     }
 }

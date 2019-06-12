@@ -118,7 +118,8 @@ namespace AnyListen.Music
                 if (format.Contains("AL"))
                 {
                     song.BitRate = "无损";
-                    song.ApeUrl = CommonHelper.GetSongUrl("kw", "1000", song.SongId, "ape");
+                    song.ApeUrl = CommonHelper.GetSongUrl("kw", "2000", song.SongId, "ape");
+                    song.FlacUrl = CommonHelper.GetSongUrl("kw", "2000", song.SongId, "flac");
                 }
                 if (format.Contains("MP4"))
                 {
@@ -246,7 +247,8 @@ namespace AnyListen.Music
                 if (format.Contains("AL"))
                 {
                     song.BitRate = "无损";
-                    song.ApeUrl = CommonHelper.GetSongUrl("kw", "1000", song.SongId, "ape");
+                    song.ApeUrl = CommonHelper.GetSongUrl("kw", "2000", song.SongId, "ape");
+                    song.FlacUrl = CommonHelper.GetSongUrl("kw", "2000", song.SongId, "flac");
                 }
                 if (format.Contains("MP4"))
                 {
@@ -370,7 +372,7 @@ namespace AnyListen.Music
                     CommonHelper.GetHtmlContent("http://player.kuwo.cn/webmusic/sj/dtflagdate?flag=6&rid=MUSIC_" + id);
                 if (string.IsNullOrEmpty(html) || !html.Contains(".jpg"))
                 {
-                    return quality == "low" ? "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/2311.jpg" : "http://yyfm.oss-cn-qingdao.aliyuncs.com/anylisten/23.jpg";
+                    return quality == "low" ? "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29" : "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29";
                 }
                 var strs = html.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 if (html.Contains("star/albumcover"))
@@ -387,9 +389,9 @@ namespace AnyListen.Music
             {
                 return "http://antiserver.kuwo.cn/anti.s?rid=MUSIC_" + id + "&response=res&format=mp4&type=convert_url";
             }
-            var text = "type=convert_url2&br=" + quality + "&format="+(format == "ape" ? "ape" : "mp3") +"&sig=0&rid="+id+"&network=wifi";
+            var text = "type=convert_url2&br=" + quality + "&format="+ format + "&sig=0&rid="+id+"&network=wifi";
             var link = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=" + Convert.ToBase64String(KuwoDES.EncryptToBytes(text, "ylzsxkwm"));
-            var result = CommonHelper.GetHtmlContent(link);
+            var result = CommonHelper.GetHtmlContent(link, 9);
             return string.IsNullOrEmpty(result) ? "" : Regex.Match(result, @"(?<=url=)http:\S+").Value;
         }
 

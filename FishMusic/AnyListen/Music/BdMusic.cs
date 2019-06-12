@@ -372,7 +372,7 @@ namespace AnyListen.Music
                 case "flv":
                     return GetMvUrl(id, quality);
                 case "flac":
-                    var html = CommonHelper.GetHtmlContent("http://music.baidu.com/data/music/fmlink?rate=320&type=flac&songIds=" + id);
+                    var html = CommonHelper.GetHtmlContent("http://music.taihe.com/data/music/fmlink?rate=999&type=flac&songIds=" + id);
                     if (string.IsNullOrEmpty(html))
                     {
                         return null;
@@ -395,6 +395,10 @@ namespace AnyListen.Music
 
             }
             var song = SearchSingle(id);
+            if (song == null)
+            {
+                return "";
+            }
             switch (format)
             {
                 case "lrc":
@@ -402,9 +406,9 @@ namespace AnyListen.Music
                 case "jpg":
                     if (quality == "high")
                     {
-                        return string.IsNullOrEmpty(song.PicUrl) ? "http://yyfm.oss-cn-qingdao.aliyuncs.com/img/mspy.jpg" : song.PicUrl;
+                        return string.IsNullOrEmpty(song.PicUrl) ? "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29" : song.PicUrl;
                     }
-                    return string.IsNullOrEmpty(song.SmallPic) ? (string.IsNullOrEmpty(song.PicUrl) ? "http://yyfm.oss-cn-qingdao.aliyuncs.com/img/mspy.jpg" : song.PicUrl) : song.SmallPic;
+                    return string.IsNullOrEmpty(song.SmallPic) ? (string.IsNullOrEmpty(song.PicUrl) ? "https://user-gold-cdn.xitu.io/2018/7/2/16459c1e94f61f29" : song.PicUrl) : song.SmallPic;
             }
             string url;
             switch (quality)

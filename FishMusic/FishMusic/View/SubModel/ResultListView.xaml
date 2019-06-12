@@ -12,7 +12,21 @@
              VerticalAlignment="Stretch"
              d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
+        <Grid.Resources>
+            <ControlTemplate x:Key="Default" TargetType='{x:Type ListViewItem}'>
+                <StackPanel Background="Beige">
+                    <GridViewRowPresenter Content="{TemplateBinding Content}"
+                                          Height="66" Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                </StackPanel>
+            </ControlTemplate>
+        </Grid.Resources>
+
         <ListView>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}"  >
+                    <Setter Property="Template"  Value="{StaticResource Default}"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="" Width="30">
@@ -26,10 +40,10 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:SongResult}">
                                 <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconMaterial Kind="HeartOutline"
-                                            Margin="5"
-                                            VerticalAlignment="Center"/>
-        <iconPacks:PackIconMaterial Kind="Download"
+                                    <!-- <iconPacks:PackIconMaterial Kind="HeartOutline" -->
+                                    <!--         Margin="5" -->
+                                    <!--         VerticalAlignment="Center"/> -->
+                                    <iconPacks:PackIconMaterial Kind="Download"
                                             Margin="5"
                                             VerticalAlignment="Center"/>
                                 </StackPanel>
